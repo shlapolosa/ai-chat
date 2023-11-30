@@ -4,6 +4,8 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from typing import Optional
+
 # Configure structured logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -16,13 +18,10 @@ from config import settings
 from openai_assistant_manager import OpenAIAssistantManager
 from chat_service import ChatService
 
-# Create a global instance of ChatService
-chat_service_instance = ChatService(OpenAIAssistantManager(settings.openai_api_key))
+
+chat_service_instance =Optional[ChatService]
 
 app = FastAPI(title=settings.PROJECT_NAME)
-
-# Create a global instance of ChatService
-chat_service_instance = ChatService(OpenAIAssistantManager(settings.openai_api_key))
 
 # Configure CORS
 app.add_middleware(
@@ -57,9 +56,10 @@ async def startup_event():
     global chat_service_instance
     logger.info("Starting up...")
     assistant_manager = OpenAIAssistantManager(settings.openai_api_key)
-    assistant_manager.load_or_create_assistants()
-    chat_service_instance = ChatService(assistant_manager)
     logger.info("Assistants have been loaded.")
+    chat_service_instance = ChatService(assistant_manager)
+    logger.info("ChatService have been loaded.")
+
     print("Server is running. Access it at http://127.0.0.1:8000")  # Replace with actual host and port if known
 
 # Application shutdown event
