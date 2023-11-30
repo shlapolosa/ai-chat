@@ -57,7 +57,8 @@ app.include_router(api_router, prefix="/api")
 # Application startup event
 @app.on_event("startup")
 async def startup_event():
-    logging.info("Starting up...")
+    logger.info("Starting up...")
+    logger.info("Creating and loading assistants...")
     print("Server is running. Access it at http://127.0.0.1:8000")  # Replace with actual host and port if known
 
 # Application shutdown event

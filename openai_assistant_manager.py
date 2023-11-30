@@ -1,6 +1,10 @@
+import logging
 import json
 import os
 from openai import OpenAI
+
+# Configure logging
+logger = logging.getLogger(__name__)
 import prompts
 import gpt_tools
 
@@ -19,20 +23,25 @@ class OpenAIAssistantManager:
         }
 
     def load_or_create_assistants(self):
+        logger.info("Loading or creating assistants...")
         assistants_info_path = "assistants_info.json"
         if os.path.exists(assistants_info_path):
+            logger.info(f"Found existing assistants info at {assistants_info_path}. Loading...")
             with open(assistants_info_path, "r") as file:
                 return json.load(file)
         else:
+            logger.info("No existing assistants info found. Creating new assistants...")
             all_assistants_info = self.create_all_assistants()
             with open(assistants_info_path, "w") as file:
                 json.dump(all_assistants_info, file, indent=4)
             return all_assistants_info
 
     def create_all_assistants(self):
+        logger.info("Creating all assistants based on the configuration...")
         all_assistants_info = []
         for assistant_name, config in prompts.assistants.items():
             if config.get("active", False):
+                logger.info(f"Creating assistant: {assistant_name}")
                 tool_function_names = config.get("tools", "").split(", ")
                 tools = [getattr(gpt_tools, name) for name in tool_function_names if hasattr(gpt_tools, name)]
 
@@ -49,15 +58,21 @@ class OpenAIAssistantManager:
                     "assistant_id": assistant.id
                 }
                 all_assistants_info.append(assistant_info)
+                logger.info(f"Assistant {assistant_name} created with ID: {assistant.id}")
+        logger.info("All assistants have been created.")
         return all_assistants_info
 
     def upload_knowledge_files(self, filenames):
+        logger.info("Uploading knowledge files...")
         file_ids = []
         for filename in filenames:
             if filename:
+                logger.info(f"Uploading file: {filename}")
                 with open(filename, "rb") as file:
                     uploaded_file = self._client.files.create(file=file, purpose='answers')
                     file_ids.append(uploaded_file.id)
+                    logger.info(f"File uploaded with ID: {uploaded_file.id}")
+        logger.info("All knowledge files have been uploaded.")
         return file_ids
 
     def create_thread(self, assistant_id):
