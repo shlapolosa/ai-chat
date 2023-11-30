@@ -8,7 +8,7 @@ router = APIRouter()
 async def read_root():
     return {"Hello": "World"}
 
-@router.get("/chat", response_model=CheckRunResponse)
+@router.get("/chat", response_model=ChatResponse)
 async def check_run_status(
     thread_id: str, run_id: str, chat_service: ChatService = Depends()
 ):
@@ -18,7 +18,7 @@ async def check_run_status(
     """
     try:
         message_content, status = await chat_service.check_run_status(thread_id, run_id)
-        return CheckRunResponse(response=message_content, status=status)
+        return ChatResponse(thread_id=thread_id, run_id=run_id, message=message_content, status=status)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -41,7 +41,7 @@ async def chat_endpoint(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.put("/chat", response_model=dict)
+@router.put("/chat", response_model=ChatResponse)
 async def start_chat(
     platform: str,
     chat_service: ChatService = Depends()
@@ -51,4 +51,4 @@ async def start_chat(
     starts a new conversation thread, and returns the thread ID.
     """
     thread_id = await chat_service.start_thread(platform)
-    return {"thread_id": thread_id}
+    return ChatResponse(thread_id=thread_id)
