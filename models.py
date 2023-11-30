@@ -17,11 +17,4 @@ class ChatResponse(BaseModel):
     message: Optional[str] = None
     status: Optional[str] = None
 
-class CheckRunRequest(BaseModel):
-    """
-    Defines the structure for checking the status of a conversation run.
-    """
-    thread_id: str
-    run_id: str
-    # Additional fields can be included as per your application's requirements.
 
