@@ -1,12 +1,37 @@
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Body, Response
 from chat_service import ChatService
 from models import ChatRequest, ChatResponse
+from openai_assistant_manager import OpenAIAssistantManager
+from config import settings
+import os
+import re
 
 router = APIRouter()
 
+def mask_sensitive_info(env_vars):
+    sensitive_keys = ['API_KEY', 'DSN', 'DATABASE_URL', 'SECRET', 'PASSWORD']
+    masked_env_vars = {}
+    for key, value in env_vars.items():
+        if any(sensitive_key in key for sensitive_key in sensitive_keys):
+            masked_env_vars[key] = '*****'
+        else:
+            masked_env_vars[key] = value
+    return masked_env_vars
+
 @router.get("/")
-async def read_root():
-    return {"Hello": "World"}
+async def read_root(openai_assistant_manager: OpenAIAssistantManager = Depends()):
+    loaded_assistants = openai_assistant_manager.assistants_info
+    openai_client_details = {
+        "organization": openai_assistant_manager._client.organization,
+        "api_version": openai_assistant_manager._client.api_version
+    }
+    env_vars = {key: os.getenv(key) for key in os.environ.keys()}
+    masked_env_vars = mask_sensitive_info(env_vars)
+    return {
+        "loaded_assistants": loaded_assistants,
+        "openai_client_details": openai_client_details,
+        "environment_variables": masked_env_vars
+    }
 
 @router.get("/chat", response_model=ChatResponse)
 async def check_run_status(

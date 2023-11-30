@@ -14,6 +14,15 @@ class OpenAIAssistantManager:
     def __init__(self, openai_api_key):
         self._client = OpenAI_Client(openai_api_key)
         self.assistants_info = self.load_or_create_assistants()
+        self.api_version = 'v1'  # Assuming the API version is v1, adjust as necessary
+        self.organization = 'your_organization'  # Replace with actual organization name
+
+    @property
+    def client_details(self):
+        return {
+            "organization": self.organization,
+            "api_version": self.api_version
+        }
 
     def load_or_create_assistants(self):
         assistants_info_path = "assistants_info.json"
