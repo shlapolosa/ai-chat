@@ -17,14 +17,10 @@ from config import settings
 from openai_assistant_manager import OpenAIAssistantManager
 from chat_service import ChatService
 
-# Dependency provider for OpenAIAssistantManager
-def get_assistant_manager():
-    return OpenAIAssistantManager(settings.openai_api_key)
-
 app = FastAPI(title=settings.PROJECT_NAME)
 
 # Create a global instance of ChatService
-chat_service_instance = ChatService(get_assistant_manager())
+chat_service_instance = ChatService(OpenAIAssistantManager(settings.openai_api_key))
 
 # Configure CORS
 app.add_middleware(
