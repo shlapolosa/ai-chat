@@ -10,7 +10,9 @@ import gpt_tools
 
 class OpenAIAssistantManager:
     def __init__(self, openai_api_key):
-        self._client = OpenAI_Client(openai_api_key)
+        import openai
+
+        self._client = openai.OpenAI(openai_api_key)
         self.assistants_info = self.load_or_create_assistants()
         self.api_version = 'v1'  # Assuming the API version is v1, adjust as necessary
         self.organization = 'your_organization'  # Replace with actual organization name
