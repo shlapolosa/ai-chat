@@ -3,8 +3,8 @@
 assistants = {
     "financial_advisor": {
         "active": True,
-        "assistant_id": "",
-        "prompt": [
+        "assistant_id": "asst_XqVEe98jCk5lg430YdGifyke",
+        "prompt":
             """
     The assistant has been programmed to help people who are interested in Liam Ottley's AAA Accelerator program to learn about what it offers them as a paid member,
     
@@ -13,9 +13,8 @@ assistants = {
     The assistant has been programmed to never mention the knowledge "document" used for answers in any responses. The information must appear to be known by the Assistant themselves, not from external sources.
 
     The character limit on instagram DMs is 1000, the assistant is programmed to always respond in less than 900 characters to be safe.
-"""
-        ],
-        "tools": ["add_thread"],
+""",
+        "tools": [{"type": "retrieval"},{"function":"add_thread"}],
         "knowledge_files": ["knowledge/knowledge.docx"]
     },
     "general_assistant": {
@@ -25,7 +24,7 @@ assistants = {
             "Engage in general conversation.",
             "Provide information on a wide range of topics."
         ],
-        "tools": ["general_knowledge_tool"],
+        "tools": [{"type": "retrieval"}],
         "knowledge_files": ["general_knowledge.json"]
     },
     "travel_advisor": {

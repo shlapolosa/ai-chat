@@ -13,8 +13,7 @@ logger = logging.getLogger(__name__)
 class OpenAIAssistantManager:
 
     def __init__(self, openai_api_key):
-        openai.api_key = openai_api_key
-        self._client = openai.OpenAI()
+        self.client = openai.OpenAI(api_key=openai_api_key)
         self.api_version = 'v1'  # Assuming the API version is v1, adjust as necessary
         self.organization = 'your_organization'  # Replace with actual organization name
         self.all_assistants_info = self.load_or_create_assistants()
@@ -50,6 +49,7 @@ class OpenAIAssistantManager:
         logger.info("Creating all assistants based on the configuration...")
         all_assistants_info = []
         for assistant_name, config in prompts.assistants.items():
+            logger.info(f"Assistant {assistant_name} created with config: {config}")
             if config.get("active", True):
                 if config.get("assistant_id"):
                     logger.info(f"Loading assistant: {assistant_name}")
@@ -66,16 +66,21 @@ class OpenAIAssistantManager:
                     file_ids = self.upload_knowledge_files(config.get("knowledge", "").split(", "))
 
                     # Create the assistant using the OpenAI API
-                    assistant = openai.Assistant.create(
-                        name=assistant_name,
-                        model="gpt-3.5-turbo",
-                        allowed_models=["gpt-3.5-turbo"],
-                        config={
-                            "prompt": config.get("prompt"),
-                            "tools": tools,
-                            "file_ids": file_ids
-                        }
-                    )
+                    # assistant = self.client.beta.assistants.create(
+                    #     name=assistant_name,
+                    #     model="gpt-3.5-turbo",
+                    #     instruction=config.get("prompt"),
+                    #     tools=tools,
+                    #     file_ids= file_ids                       
+                    # )
+                    assistant = self.client.beta.assistants.create(
+                        # Change prompting in prompts.py file
+                        instructions="Be nice",
+                        model="gpt-4-1106-preview",
+                        tools=[{
+                            "type": "retrieval"  # This adds the knowledge base as a tool
+                        }],
+                        file_ids=file_ids)
                     # Store the assistant information
                     assistant_info = {
                         "assistant_name": assistant_name,
