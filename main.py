@@ -12,8 +12,9 @@ app = FastAPI(title=settings.PROJECT_NAME)
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 
-# Set up Sentry
-sentry_sdk.init(dsn=settings.SENTRY_DSN)
+# Set up Sentry if DSN is provided
+if settings.SENTRY_DSN:
+    sentry_sdk.init(dsn=settings.SENTRY_DSN)
 
 # Add Sentry middleware
 app.add_middleware(SentryAsgiMiddleware)
