@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from chat_service import ChatService
-from models import ChatRequest, ChatResponse, CheckRunRequest, CheckRunResponse
+from models import ChatRequest, ChatResponse, CheckRunRequest
 
 router = APIRouter()
 
