@@ -14,9 +14,9 @@ class OpenAIAssistantManager:
 
         openai.api_key = openai_api_key
         self._client = openai.OpenAI()
-        self.assistants_info = self.load_or_create_assistants()
         self.api_version = 'v1'  # Assuming the API version is v1, adjust as necessary
         self.organization = 'your_organization'  # Replace with actual organization name
+        self._all_assistants_info = None
 
     @property
     def client_details(self):
@@ -25,19 +25,21 @@ class OpenAIAssistantManager:
             "api_version": self.api_version
         }
 
-    def load_or_create_assistants(self):
-        logger.info("Loading or creating assistants...")
-        assistants_info_path = "assistants_info.json"
-        if os.path.exists(assistants_info_path):
-            logger.info(f"Found existing assistants info at {assistants_info_path}. Loading...")
-            with open(assistants_info_path, "r") as file:
-                return json.load(file)
-        else:
-            logger.info("No existing assistants info found. Creating new assistants...")
-            all_assistants_info = self.create_all_assistants()
-            with open(assistants_info_path, "w") as file:
-                json.dump(all_assistants_info, file, indent=4)
-            return all_assistants_info
+    @property
+    def all_assistants_info(self):
+        if self._all_assistants_info is None:
+            logger.info("Loading or creating assistants...")
+            assistants_info_path = "assistants_info.json"
+            if os.path.exists(assistants_info_path):
+                logger.info(f"Found existing assistants info at {assistants_info_path}. Loading...")
+                with open(assistants_info_path, "r") as file:
+                    self._all_assistants_info = json.load(file)
+            else:
+                logger.info("No existing assistants info found. Creating new assistants...")
+                self._all_assistants_info = self.create_all_assistants()
+                with open(assistants_info_path, "w") as file:
+                    json.dump(self._all_assistants_info, file, indent=4)
+        return self._all_assistants_info
 
     def create_all_assistants(self):
         logger.info("Creating all assistants based on the configuration...")
