@@ -4,7 +4,7 @@ from typing import Optional
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Application"
-    SENTRY_DSN: Optional[str] = None
+    SENTRY_DSN: str = ""
 
     class Config:
         env_file = ".env"
