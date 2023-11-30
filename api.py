@@ -8,20 +8,16 @@ router = APIRouter()
 async def read_root():
     return {"Hello": "World"}
 
-@router.post("/check", response_model=CheckRunResponse)
+@router.get("/chat", response_model=CheckRunResponse)
 async def check_run_status(
-    check_request: CheckRunRequest,
-    chat_service: ChatService = Depends()
+    thread_id: str, run_id: str, chat_service: ChatService = Depends()
 ):
     """
-    Endpoint to check the status of a chat run. Accepts the thread ID and run ID,
+    GET endpoint to check the status of a chat run using query parameters. Accepts the thread ID and run ID as query parameters,
     and returns the status of the run along with any response message.
     """
     try:
-        message_content, status = await chat_service.check_run_status(
-            thread_id=check_request.thread_id,
-            run_id=check_request.run_id
-        )
+        message_content, status = await chat_service.check_run_status(thread_id, run_id)
         return CheckRunResponse(response=message_content, status=status)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
