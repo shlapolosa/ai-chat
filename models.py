@@ -24,10 +24,3 @@ class CheckRunRequest(BaseModel):
     run_id: str
     # Additional fields can be included as per your application's requirements.
 
-class CheckRunResponse(BaseModel):
-    """
-    Defines the structure of the response for a check run request.
-    """
-    status: str
-    response: str  # This might contain the message or relevant information about the run status.
-    # Additional response details can be added.
