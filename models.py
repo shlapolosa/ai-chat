@@ -26,5 +26,5 @@ class ChatResponse(BaseModel):
     status: Optional[str] = None
 
 class DetailsResponse(BaseModel):
-    loaded_assistants: Optional[List[AssistantInfo]] = None
-    environment_variables: Optional[List[EnvironmentVariables]] = None
+    loaded_assistants: List[AssistantInfo] = []
+    environment_variables: List[EnvironmentVariables] = []
