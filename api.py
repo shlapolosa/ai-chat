@@ -3,7 +3,7 @@ from .services.chat_service import ChatService
 
 router = APIRouter()
 
-@router.get("/start")
+@router.put("/chat")
 async def start_conversation(chat_service: ChatService = Depends(), platform: str = "Not Specified"):
     """
     Endpoint to start a new conversation thread. The 'platform' parameter can be used
