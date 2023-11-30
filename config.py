@@ -1,11 +1,12 @@
 import os
+from typing import Optional
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     openai_api_key: str = os.getenv('OPENAI_API_KEY')
-    sentry_dsn: str = os.getenv('SENTRY_DSN')
-    database_url: str = os.getenv('DATABASE_URL')
-    environment: str = os.getenv('ENVIRONMENT')
-    backend_cors_origins: str = os.getenv('BACKEND_CORS_ORIGINS')
+    sentry_dsn: Optional[str] = os.getenv('SENTRY_DSN')
+    database_url: Optional[str] = os.getenv('DATABASE_URL')
+    environment: Optional[str] = os.getenv('ENVIRONMENT', 'development')
+    backend_cors_origins: Optional[str] = os.getenv('BACKEND_CORS_ORIGINS', '*')
 
 settings = Settings()
