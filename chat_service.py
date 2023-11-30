@@ -1,22 +1,21 @@
 import asyncio
 import time
-from typing import List
 from openai_assistant_manager import OpenAIAssistantManager
 
 class ChatService:
     def __init__(self, assistant_manager: OpenAIAssistantManager):
         self._assistant_manager = assistant_manager
 
-    def get_loaded_assistants_info(self) -> List[dict]:
-        # This method will encapsulate the assistant_manager and return the necessary info
-        # without exposing the OpenAIAssistantManager or its components.
-        return [
-            {
-                "assistant_name": assistant.get("assistant_name"),
-                "assistant_id": assistant.get("assistant_id")
-            }
-            for assistant in self._assistant_manager.assistants_info
-        ]
+    # def get_loaded_assistants_info(self) -> List[dict]:
+    #     # This method will encapsulate the assistant_manager and return the necessary info
+    #     # without exposing the OpenAIAssistantManager or its components.
+    #     return [
+    #         {
+    #             "assistant_name": assistant.get("assistant_name"),
+    #             "assistant_id": assistant.get("assistant_id")
+    #         }
+    #         for assistant in self._assistant_manager.all_assistants_info
+    #     ]
 
     async def start_thread(self, platform: str):
         assistant_id = self.assistant_manager.get_assistant_id_by_platform(platform)

@@ -6,11 +6,11 @@ import prompts
 import gpt_tools
 
 
+    # Configure logging
+logger = logging.getLogger(__name__)
+
 
 class OpenAIAssistantManager:
-
-    # Configure logging
-    logger = logging.getLogger(__name__)
 
     def __init__(self, openai_api_key):
         openai.api_key = openai_api_key

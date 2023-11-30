@@ -1,26 +1,25 @@
 import os
 from fastapi import APIRouter, Depends, HTTPException, Body, Response
-from models import ChatRequest, ChatResponse, DetailsResponse
+from models import ChatRequest, ChatResponse
 from chat_service import ChatService
 from config import settings
 from main import logger
 
 router = APIRouter()
 
-@router.get("/", response_model=DetailsResponse)
-async def read_root(chat_service: ChatService = Depends()) -> DetailsResponse:
-    def mask_sensitive_info(env_vars):
-        sensitive_keys = ['API_KEY', 'DSN', 'DATABASE_URL', 'SECRET', 'PASSWORD']
-        masked_env_vars = {}
-        for key, value in env_vars.items():
-            if any(sensitive_key in key for sensitive_key in sensitive_keys):
-                masked_env_vars[key] = '*****'
-            else:
-                masked_env_vars[key] = value
-        return masked_env_vars
 
-@router.get("/", response_model=DetailsResponse)
-async def read_root(chat_service: ChatService = Depends()) -> DetailsResponse:
+def mask_sensitive_info(env_vars):
+    sensitive_keys = ['API_KEY', 'DSN', 'DATABASE_URL', 'SECRET', 'PASSWORD']
+    masked_env_vars = {}
+    for key, value in env_vars.items():
+        if any(sensitive_key in key for sensitive_key in sensitive_keys):
+            masked_env_vars[key] = '*****'
+        else:
+            masked_env_vars[key] = value
+    return masked_env_vars
+
+@router.get("/", response_model=None)
+async def read_root(chat_service: ChatService = Depends()) -> None:
     logger.info("Root endpoint was called")
     loaded_assistants = chat_service.get_loaded_assistants_info()
     env_vars = {key: os.getenv(key) for key in os.environ.keys()}

@@ -1,4 +1,4 @@
-from typing import Optional, List, Union
+from typing import Optional
 from pydantic import BaseModel
 
 class AssistantInfo(BaseModel):
@@ -25,6 +25,6 @@ class ChatResponse(BaseModel):
     message: Optional[str] = None
     status: Optional[str] = None
 
-class DetailsResponse(BaseModel):
-    loaded_assistants: List[AssistantInfo] = []
-    environment_variables: List[EnvironmentVariables] = []
+# class DetailsResponse(BaseModel):
+#     loaded_assistants: List[AssistantInfo] = []
+#     environment_variables: List[EnvironmentVariables] = []
