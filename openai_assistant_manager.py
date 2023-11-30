@@ -32,24 +32,34 @@ class OpenAIAssistantManager:
         all_assistants_info = []
         for assistant_name, config in prompts.assistants.items():
             if config.get("active", False):
-                logger.info(f"Creating assistant: {assistant_name}")
-                tool_function_names = config.get("tools", "").split(", ")
-                tools = [getattr(gpt_tools, name) for name in tool_function_names if hasattr(gpt_tools, name)]
+                if config.get("assistant_id"):
+                    logger.info(f"Loading assistant: {assistant_name}")
+                    assistant_info = {
+                        "assistant_name": assistant_name,
+                        "assistant_id": config.get("assistant_id")
+                    }
+                    all_assistants_info.append(assistant_info)
+                else:
+                    logger.info(f"Creating assistant: {assistant_name}")
+                    tool_function_names = config.get("tools", "").split(", ")
+                    tools = [getattr(gpt_tools, name) for name in tool_function_names if hasattr(gpt_tools, name)]
 
-                file_ids = self.upload_knowledge_files(config.get("knowledge", "").split(", "))
+                    file_ids = self.upload_knowledge_files(config.get("knowledge", "").split(", "))
 
-                assistant = self._client.beta.assistants.create(
-                    instructions=config.get("prompt"),
-                    model="gpt-4-1106-preview",
-                    tools=tools,
-                    file_ids=file_ids
-                )
-                assistant_info = {
-                    "assistant_name": assistant_name,
-                    "assistant_id": assistant.id
-                }
-                all_assistants_info.append(assistant_info)
-                logger.info(f"Assistant {assistant_name} created with ID: {assistant.id}")
+                    assistant = self._client.beta.assistants.create(
+                        instructions=config.get("prompt"),
+                        model="gpt-4-1106-preview",
+                        tools=tools,
+                        file_ids=file_ids
+                    )
+                    assistant_info = {
+                        "assistant_name": assistant_name,
+                        "assistant_id": assistant.id
+                    }
+                    all_assistants_info.append(assistant_info)
+                    logger.info(f"Assistant {assistant_name} created with ID: {assistant.id}")
+            else:
+                logger.info(f"Skipping inactive assistant: {assistant_name}")
         logger.info("All assistants have been created.")
         return all_assistants_info
 
