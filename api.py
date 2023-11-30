@@ -24,13 +24,13 @@ router = APIRouter()
 @router.get("/", response_model=DetailsResponse)
 async def read_root(chat_service: ChatService = Depends()) -> DetailsResponse:
     logger.info("Root endpoint was called")
-    loaded_assistants = chat_service.get_loaded_assistants_info() or []
+    loaded_assistants = chat_service.get_loaded_assistants_info()
     env_vars = {key: os.getenv(key) for key in os.environ.keys()}
     masked_env_vars = mask_sensitive_info(env_vars)
-    return {
-        "loaded_assistants": loaded_assistants,
-        "environment_variables": masked_env_vars
-    }
+    return DetailsResponse(
+        loaded_assistants=[AssistantInfo(**assistant) for assistant in loaded_assistants],
+        environment_variables=[EnvironmentVariables(key=key, value=value) for key, value in masked_env_vars.items()]
+    )
 
 @router.get("/chat", response_model=ChatResponse)
 async def check_run_status(
