@@ -1,5 +1,11 @@
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+# Configure structured logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 import sentry_sdk
 import uvicorn
@@ -9,8 +15,13 @@ from config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+# Error handler example
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail},
+    )
 
 # Set up Sentry if DSN is provided
 if settings.SENTRY_DSN:
