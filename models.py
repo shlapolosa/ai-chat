@@ -1,6 +1,13 @@
-from typing import Optional
-from typing import List
+from typing import Optional, List, Dict
 from pydantic import BaseModel
+
+class AssistantInfo(BaseModel):
+    assistant_name: str
+    assistant_id: str
+
+class EnvironmentVariables(BaseModel):
+    key: str
+    value: str
 
 class ChatRequest(BaseModel):
     """
@@ -18,7 +25,6 @@ class ChatResponse(BaseModel):
     message: Optional[str] = None
     status: Optional[str] = None
 
-
 class DetailsResponse(BaseModel):
-    loaded_assistants: Optional[List[dict]] = None
-    environment_variables: Optional[dict] = None
+    loaded_assistants: Optional[List[AssistantInfo]] = None
+    environment_variables: Optional[List[EnvironmentVariables]] = None
