@@ -2,16 +2,16 @@
 
 assistants = {
     "financial_advisor": {
-        "active": True,
+        "active": False,
         "prompt": [
             "Provide financial advice based on current market trends.",
             "Answer queries related to investments and savings."
         ],
-        "tools": ["finance_tool"],  # Example tool names, replace with actual tools.
-        "knowledge_files": ["finance_knowledge.json"]  # Path to knowledge files.
+        "tools": ["finance_tool"],
+        "knowledge_files": ["finance_knowledge.json"]
     },
     "general_assistant": {
-        "active": True,
+        "active": False,
         "prompt": [
             "Engage in general conversation.",
             "Provide information on a wide range of topics."
@@ -20,7 +20,7 @@ assistants = {
         "knowledge_files": ["general_knowledge.json"]
     },
     "travel_advisor": {
-        "active": False,  # This assistant is not active.
+        "active": False,
         "prompt": [
             "Suggest travel destinations.",
             "Provide travel tips and advisories."
