@@ -21,16 +21,17 @@ def mask_sensitive_info(env_vars):
 
 router = APIRouter()
 
-@router.get("/", response_model=DetailsResponse)
-async def read_root(chat_service: ChatService = Depends()) -> DetailsResponse:
+@router.get("/", response_model=List[Union[AssistantInfo, EnvironmentVariables]])
+async def read_root(chat_service: ChatService = Depends()) -> List[Union[AssistantInfo, EnvironmentVariables]]:
     logger.info("Root endpoint was called")
     loaded_assistants = chat_service.get_loaded_assistants_info()
     env_vars = {key: os.getenv(key) for key in os.environ.keys()}
     masked_env_vars = mask_sensitive_info(env_vars)
-    return DetailsResponse(
-        loaded_assistants=[AssistantInfo(**assistant) for assistant in loaded_assistants],
-        environment_variables=[EnvironmentVariables(key=key, value=value) for key, value in masked_env_vars.items()]
-    )
+    response = DetailsResponse.parse_obj({
+        'loaded_assistants': [AssistantInfo(**assistant) for assistant in loaded_assistants],
+        'environment_variables': [EnvironmentVariables(key=key, value=value) for key, value in masked_env_vars.items()]
+    })
+    return response.__root__
 
 @router.get("/chat", response_model=ChatResponse)
 async def check_run_status(

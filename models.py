@@ -26,5 +26,13 @@ class ChatResponse(BaseModel):
     status: Optional[str] = None
 
 class DetailsResponse(BaseModel):
-    loaded_assistants: [AssistantInfo] = []
-    environment_variables: [EnvironmentVariables] = []
+    __root__: Dict[str, List[Union[AssistantInfo, EnvironmentVariables]]]
+
+    def __iter__(self):
+        return iter(self.__root__)
+
+    @classmethod
+    def parse_obj(cls, obj):
+        loaded_assistants = obj.get('loaded_assistants', [])
+        environment_variables = obj.get('environment_variables', [])
+        return cls(__root__={'loaded_assistants': loaded_assistants, 'environment_variables': environment_variables})
