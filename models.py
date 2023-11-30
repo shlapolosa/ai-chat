@@ -26,5 +26,5 @@ class ChatResponse(BaseModel):
     status: Optional[str] = None
 
 class DetailsResponse(BaseModel):
-    loaded_assistants: List[AssistantInfo] = Field(default_factory=list)
-    environment_variables: List[EnvironmentVariables] = Field(default_factory=list)
+    loaded_assistants: [AssistantInfo] = []
+    environment_variables: [EnvironmentVariables] = []
