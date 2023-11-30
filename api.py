@@ -45,14 +45,14 @@ async def chat_endpoint(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/start", response_model=dict)
+@router.put("/chat", response_model=dict)
 async def start_chat(
     platform: str,
     chat_service: ChatService = Depends()
 ):
     """
-    Endpoint to start a new conversation thread. The 'platform' parameter can be used
-    to specify the type of assistant or conversation context.
+    Endpoint to handle a chat message. This endpoint accepts a platform parameter,
+    starts a new conversation thread, and returns the thread ID.
     """
     thread_id = await chat_service.start_thread(platform)
     return {"thread_id": thread_id}
