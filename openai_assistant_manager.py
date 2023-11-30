@@ -1,13 +1,17 @@
 import logging
 import json
 import os
-
-# Configure logging
-logger = logging.getLogger(__name__)
+import openai
 import prompts
 import gpt_tools
 
+
+
 class OpenAIAssistantManager:
+
+    # Configure logging
+    logger = logging.getLogger(__name__)
+
     def __init__(self, openai_api_key):
         openai.api_key = openai_api_key
         self._client = openai.OpenAI()
