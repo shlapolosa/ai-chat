@@ -1,6 +1,7 @@
 import logging
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 # Configure structured logging
@@ -14,6 +15,15 @@ from api import router as api_router
 from config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.backend_cors_origins.split(","),  # Use the configured origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Error handler example
 @app.exception_handler(StarletteHTTPException)
