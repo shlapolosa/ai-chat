@@ -4,11 +4,11 @@ from models import ChatRequest, ChatResponse
 
 router = APIRouter()
 
-@router.get("/api/")
+@router.get("/")
 async def read_root():
     return {"Hello": "World"}
 
-@router.get("/api/chat", response_model=ChatResponse)
+@router.get("/chat", response_model=ChatResponse)
 async def check_run_status(
     thread_id: str, run_id: str, chat_service: ChatService = Depends()
 ):
@@ -22,7 +22,7 @@ async def check_run_status(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/api/chat", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(
     chat_request: ChatRequest,
     chat_service: ChatService = Depends()
@@ -41,7 +41,7 @@ async def chat_endpoint(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.put("/api/chat", response_model=ChatResponse)
+@router.put("/chat", response_model=ChatResponse)
 async def start_chat(
     platform: str,
     chat_service: ChatService = Depends()
