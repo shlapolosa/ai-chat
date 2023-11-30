@@ -1,6 +1,6 @@
 import json
 import os
-from openai import OpenAI
+from openai import OpenAI_Client as OpenAI
 import prompts
 import gpt_tools
 
