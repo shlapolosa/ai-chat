@@ -2,8 +2,8 @@
 
 assistants = {
     "financial_advisor": {
-        "active": False,
-        "assistant_id": "",
+        "active": True,
+        "assistant_id": "asst_F1kRl9Gd58ST0dVkjL4rE70W",
         "prompt": [
             "Provide financial advice based on current market trends.",
             "Answer queries related to investments and savings."
