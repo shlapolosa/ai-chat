@@ -46,18 +46,40 @@ class OpenAIAssistantManager:
 
                     file_ids = self.upload_knowledge_files(config.get("knowledge", "").split(", "))
 
+                    # Create the assistant using the OpenAI API
                     assistant = self._client.beta.assistants.create(
                         instructions=config.get("prompt"),
                         model="gpt-4-1106-preview",
                         tools=tools,
                         file_ids=file_ids
                     )
+                    # Store the assistant information
                     assistant_info = {
                         "assistant_name": assistant_name,
                         "assistant_id": assistant.id
                     }
                     all_assistants_info.append(assistant_info)
+                    # Update the assistant_id in the prompts.py file
+                    self.update_assistant_id_in_prompts(assistant_name, assistant.id)
                     logger.info(f"Assistant {assistant_name} created with ID: {assistant.id}")
+
+    def update_assistant_id_in_prompts(self, assistant_name, assistant_id):
+        # Read the content of the prompts.py file
+        with open('prompts.py', 'r') as file:
+            lines = file.readlines()
+        
+        # Modify the assistant_id for the specific assistant
+        for i, line in enumerate(lines):
+            if f'"{assistant_name}": ' in line:
+                for j in range(i+1, len(lines)):
+                    if '"assistant_id":' in lines[j]:
+                        lines[j] = f'        "assistant_id": "{assistant_id}",\n'
+                        break
+                break
+        
+        # Write the updated content back to the prompts.py file
+        with open('prompts.py', 'w') as file:
+            file.writelines(lines)
             else:
                 logger.info(f"Skipping inactive assistant: {assistant_name}")
         logger.info("All assistants have been created.")
