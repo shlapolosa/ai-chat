@@ -21,11 +21,10 @@ from chat_service import ChatService
 def get_assistant_manager():
     return OpenAIAssistantManager(settings.openai_api_key)
 
-# Dependency provider for ChatService
-def get_chat_service(assistant_manager: OpenAIAssistantManager = Depends(get_assistant_manager)):
-    return ChatService(assistant_manager)
-
 app = FastAPI(title=settings.PROJECT_NAME)
+
+# Create a global instance of ChatService
+chat_service_instance = None
 
 # Configure CORS
 app.add_middleware(
@@ -57,9 +56,11 @@ app.include_router(api_router, prefix="/api")
 # Application startup event
 @app.on_event("startup")
 async def startup_event():
+    global chat_service_instance
     logger.info("Starting up...")
     assistant_manager = OpenAIAssistantManager(settings.openai_api_key)
     assistant_manager.load_or_create_assistants()
+    chat_service_instance = ChatService(assistant_manager)
     logger.info("Assistants have been loaded.")
     print("Server is running. Access it at http://127.0.0.1:8000")  # Replace with actual host and port if known
 
