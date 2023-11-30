@@ -19,17 +19,12 @@ def mask_sensitive_info(env_vars):
     return masked_env_vars
 
 @router.get("/")
-async def read_root(openai_assistant_manager: OpenAIAssistantManager = Depends()):
-    loaded_assistants = openai_assistant_manager.assistants_info
-    openai_client_details = {
-        "organization": openai_assistant_manager._client.organization,
-        "api_version": openai_assistant_manager._client.api_version
-    }
+async def read_root(chat_service: ChatService = Depends()):
+    loaded_assistants = chat_service.get_loaded_assistants_info()
     env_vars = {key: os.getenv(key) for key in os.environ.keys()}
     masked_env_vars = mask_sensitive_info(env_vars)
     return {
         "loaded_assistants": loaded_assistants,
-        "openai_client_details": openai_client_details,
         "environment_variables": masked_env_vars
     }
 
