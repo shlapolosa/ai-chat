@@ -19,8 +19,8 @@ if settings.SENTRY_DSN:
 # Add Sentry middleware
 app.add_middleware(SentryAsgiMiddleware)
 
-# Include routers
-app.include_router(api_router)
+# Include routers with a prefix
+app.include_router(api_router, prefix="/api")
 
 # Application startup event
 @app.on_event("startup")
