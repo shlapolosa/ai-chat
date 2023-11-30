@@ -19,6 +19,6 @@ class ChatResponse(BaseModel):
     status: Optional[str] = None
 
 
-class RootResponse(BaseModel):
-    loaded_assistants: List[dict]
-    environment_variables: dict
+class DetailsResponse(BaseModel):
+    loaded_assistants: Optional[List[dict]] = None
+    environment_variables: Optional[dict] = None
