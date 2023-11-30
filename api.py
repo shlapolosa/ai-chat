@@ -3,6 +3,10 @@ from .services.chat_service import ChatService
 
 router = APIRouter()
 
+@router.get("/")
+async def read_root():
+    return {"Hello": "World"}
+
 @router.put("/chat")
 async def start_conversation(chat_service: ChatService = Depends(), platform: str = "Not Specified"):
     """
