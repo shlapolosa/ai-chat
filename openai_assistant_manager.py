@@ -60,7 +60,7 @@ class OpenAIAssistantManager:
                     all_assistants_info.append(assistant_info)
                 else:
                     logger.info(f"Creating assistant: {assistant_name}")
-                    tool_function_names = config.get("tools", "").split(", ")
+                    tool_function_names = config.get("tools", [])
                     tools = [getattr(gpt_tools, name) for name in tool_function_names if hasattr(gpt_tools, name)]
 
                     file_ids = self.upload_knowledge_files(config.get("knowledge", "").split(", "))
