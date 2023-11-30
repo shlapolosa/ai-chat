@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Body, Response
 from main import logger
 from chat_service import ChatService
-from models import ChatRequest, ChatResponse
+from models import ChatRequest, ChatResponse, RootResponse
 from openai_assistant_manager import OpenAIAssistantManager
 from config import settings
 import os
