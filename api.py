@@ -2,10 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, Body, Response
 from main import logger
 from chat_service import ChatService
 from models import ChatRequest, ChatResponse, DetailsResponse
-from openai_assistant_manager import OpenAIAssistantManager
 from config import settings
 import os
-import re
 
 router = APIRouter()
 
@@ -21,7 +19,7 @@ def mask_sensitive_info(env_vars):
 
 router = APIRouter()
 
-@router.get("/", response_model=None)
+@router.get("/", response_model=DetailsResponse)
 async def read_root(chat_service: ChatService = Depends()) -> DetailsResponse:
     logger.info("Root endpoint was called")
     loaded_assistants = chat_service.get_loaded_assistants_info()
