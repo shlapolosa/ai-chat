@@ -24,7 +24,7 @@ def get_assistant_manager():
 app = FastAPI(title=settings.PROJECT_NAME)
 
 # Create a global instance of ChatService
-chat_service_instance = None
+chat_service_instance = ChatService(get_assistant_manager())
 
 # Configure CORS
 app.add_middleware(
