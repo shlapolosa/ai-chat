@@ -66,7 +66,8 @@ class OpenAIAssistantManager:
                     file_ids = self.upload_knowledge_files(config.get("knowledge", "").split(", "))
 
                     # Create the assistant using the OpenAI API
-                    assistant = self._client.beta.assistants.create(
+                    assistant = self._client.Assistant.create(
+                        name=assistant_name,
                         instructions=config.get("prompt"),
                         model="gpt-4-1106-preview",
                         tools=tools,
