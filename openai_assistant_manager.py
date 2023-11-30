@@ -27,6 +27,25 @@ class OpenAIAssistantManager:
         }
 
 
+    def update_assistant_id_in_prompts(self, assistant_name, assistant_id):
+        # Read the content of the prompts.py file
+        with open('prompts.py', 'r') as file:
+            lines = file.readlines()
+        
+        # Modify the assistant_id for the specific assistant
+        for i, line in enumerate(lines):
+            if f'"{assistant_name}": ' in line:
+                for j in range(i+1, len(lines)):
+                    if '"assistant_id":' in lines[j]:
+                        lines[j] = f'        "assistant_id": "{assistant_id}",\n'
+                        break
+                break
+        
+        # Write the updated content back to the prompts.py file
+        with open('prompts.py', 'w') as file:
+            file.writelines(lines)
+
+            
     def load_or_create_assistants(self):
         logger.info("Creating all assistants based on the configuration...")
         all_assistants_info = []
@@ -62,24 +81,6 @@ class OpenAIAssistantManager:
                     # Update the assistant_id in the prompts.py file
                     self.update_assistant_id_in_prompts(assistant_name, assistant.id)
                     logger.info(f"Assistant {assistant_name} created with ID: {assistant.id}")
-
-    def update_assistant_id_in_prompts(self, assistant_name, assistant_id):
-        # Read the content of the prompts.py file
-        with open('prompts.py', 'r') as file:
-            lines = file.readlines()
-        
-        # Modify the assistant_id for the specific assistant
-        for i, line in enumerate(lines):
-            if f'"{assistant_name}": ' in line:
-                for j in range(i+1, len(lines)):
-                    if '"assistant_id":' in lines[j]:
-                        lines[j] = f'        "assistant_id": "{assistant_id}",\n'
-                        break
-                break
-        
-        # Write the updated content back to the prompts.py file
-        with open('prompts.py', 'w') as file:
-            file.writelines(lines)
             else:
                 logger.info(f"Skipping inactive assistant: {assistant_name}")
         logger.info("All assistants have been created.")
