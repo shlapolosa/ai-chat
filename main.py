@@ -12,10 +12,12 @@ import sentry_sdk
 import uvicorn
 
 from api import router as api_router
-from fastapi import Depends
 from config import settings
 from openai_assistant_manager import OpenAIAssistantManager
 from chat_service import ChatService
+
+# Create a global instance of ChatService
+chat_service_instance = ChatService(OpenAIAssistantManager(settings.openai_api_key))
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
