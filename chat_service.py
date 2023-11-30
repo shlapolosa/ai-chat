@@ -3,7 +3,7 @@ import time
 from openai_assistant_manager import OpenAIAssistantManager
 
 class ChatService:
-    def __init__(self, assistant_manager: OpenAIAssistantManager):
+    def __init__(self, assistant_manager):
         self._assistant_manager = assistant_manager
 
     # def get_loaded_assistants_info(self) -> List[dict]:
