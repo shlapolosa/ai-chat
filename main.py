@@ -58,7 +58,9 @@ app.include_router(api_router, prefix="/api")
 @app.on_event("startup")
 async def startup_event():
     logger.info("Starting up...")
-    logger.info("Creating and loading assistants...")
+    assistant_manager = OpenAIAssistantManager(settings.openai_api_key)
+    assistant_manager.load_or_create_assistants()
+    logger.info("Assistants have been loaded.")
     print("Server is running. Access it at http://127.0.0.1:8000")  # Replace with actual host and port if known
 
 # Application shutdown event
