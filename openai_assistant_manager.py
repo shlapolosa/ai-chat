@@ -1,7 +1,6 @@
 import logging
 import json
 import os
-from openai import OpenAI
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -10,13 +9,11 @@ import gpt_tools
 
 class OpenAIAssistantManager:
     def __init__(self, openai_api_key):
-        import openai
-
         openai.api_key = openai_api_key
         self._client = openai.OpenAI()
         self.api_version = 'v1'  # Assuming the API version is v1, adjust as necessary
         self.organization = 'your_organization'  # Replace with actual organization name
-        self._load_or_create_assistants = self.load_or_create_assistants()
+        self.all_assistants_info = self.load_or_create_assistants()
 
     @property
     def client_details(self):
@@ -25,11 +22,8 @@ class OpenAIAssistantManager:
             "api_version": self.api_version
         }
 
-    @property
-    def load_or_create_assistants(self):
-        return self._load_or_create_assistants
 
-    def create_all_assistants(self):
+    def load_or_create_assistants(self):
         logger.info("Creating all assistants based on the configuration...")
         all_assistants_info = []
         for assistant_name, config in prompts.assistants.items():
@@ -102,8 +96,4 @@ class OpenAIAssistantManager:
         for assistant in self.assistants_info:
             if assistant["assistant_name"] == assistant_name:
                 return assistant["assistant_id"]
-        return None
-
-    def get_assistant_id_by_platform(self, platform):
-        # Similar to get_assistant_id_by_action, map platform to assistant
         return None

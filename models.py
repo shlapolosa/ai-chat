@@ -1,5 +1,5 @@
-from typing import Optional, List, Dict
-from pydantic import BaseModel, Field
+from typing import Optional, List, Union
+from pydantic import BaseModel
 
 class AssistantInfo(BaseModel):
     assistant_name: str
@@ -26,13 +26,5 @@ class ChatResponse(BaseModel):
     status: Optional[str] = None
 
 class DetailsResponse(BaseModel):
-    __root__: Dict[str, List[Union[AssistantInfo, EnvironmentVariables]]]
-
-    def __iter__(self):
-        return iter(self.__root__)
-
-    @classmethod
-    def parse_obj(cls, obj):
-        loaded_assistants = obj.get('loaded_assistants', [])
-        environment_variables = obj.get('environment_variables', [])
-        return cls(__root__={'loaded_assistants': loaded_assistants, 'environment_variables': environment_variables})
+    loaded_assistants: List[AssistantInfo] = []
+    environment_variables: List[EnvironmentVariables] = []
