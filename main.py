@@ -15,14 +15,13 @@ import uvicorn
 
 from config import settings
 from openai_assistant_manager import OpenAIAssistantManager
-from chat_service import ChatService
+from api import router as api_router
 
-chat_service_instance = ChatService(OpenAIAssistantManager(settings.openai_api_key))
 
-from api import get_router
-api_router = get_router()
 
 app = FastAPI(title=settings.PROJECT_NAME)
+
+
 
 # Configure CORS
 app.add_middleware(
@@ -54,12 +53,9 @@ app.include_router(api_router, prefix="/api")
 # Application startup event
 @app.on_event("startup")
 async def startup_event():
-    global chat_service_instance
+
     logger.info("Starting up...")
-    assistant_manager = OpenAIAssistantManager(settings.openai_api_key)
-    logger.info("Assistants have been loaded.")
-    chat_service_instance = ChatService(assistant_manager)
-    logger.info("ChatService have been loaded.")
+
 
     print("Server is running. Access it at http://127.0.0.1:8000")  # Replace with actual host and port if known
 
