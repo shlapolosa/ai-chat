@@ -16,7 +16,7 @@ class OpenAIAssistantManager:
         self._client = openai.OpenAI()
         self.api_version = 'v1'  # Assuming the API version is v1, adjust as necessary
         self.organization = 'your_organization'  # Replace with actual organization name
-        self._all_assistants_info = self.load_or_create_assistants()
+        self._load_or_create_assistants = self.load_or_create_assistants()
 
     @property
     def client_details(self):
@@ -26,8 +26,8 @@ class OpenAIAssistantManager:
         }
 
     @property
-    def all_assistants_info(self):
-        return self._all_assistants_info
+    def load_or_create_assistants(self):
+        return self._load_or_create_assistants
 
     def create_all_assistants(self):
         logger.info("Creating all assistants based on the configuration...")
