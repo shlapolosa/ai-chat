@@ -1,18 +1,18 @@
-import os
 from fastapi import APIRouter, Depends, HTTPException, Body, Response
-from models import ChatRequest, ChatResponse
+from main import logger
 from chat_service import ChatService
-from config import settings
+from models import ChatRequest, ChatResponse
 from openai_assistant_manager import OpenAIAssistantManager
-
+from config import settings
+import os
+import re
 
 router = APIRouter()
 
 assistant_manager = OpenAIAssistantManager(settings.openai_api_key)
-# logger.info("Assistants have been loaded.")
+logger.info("Assistants have been loaded.")
 chat_service_instance = ChatService(assistant_manager)
-# logger.info("ChatService have been loaded.")
-
+logger.info("ChatService have been loaded.")
 
 def mask_sensitive_info(env_vars):
     sensitive_keys = ['API_KEY', 'DSN', 'DATABASE_URL', 'SECRET', 'PASSWORD']
@@ -23,7 +23,6 @@ def mask_sensitive_info(env_vars):
         else:
             masked_env_vars[key] = value
     return masked_env_vars
-
 
 @router.get("/")
 async def read_root():
