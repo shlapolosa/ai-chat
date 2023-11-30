@@ -19,12 +19,6 @@ def mask_sensitive_info(env_vars):
             masked_env_vars[key] = value
     return masked_env_vars
 
-from fastapi import APIRouter, Depends, HTTPException, Body, Response
-from typing import List
-
-from models import ChatRequest, ChatResponse
-from chat_service import ChatService
-
 router = APIRouter()
 
 @router.get("/")
