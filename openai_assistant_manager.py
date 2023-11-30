@@ -31,7 +31,7 @@ class OpenAIAssistantManager:
         logger.info("Creating all assistants based on the configuration...")
         all_assistants_info = []
         for assistant_name, config in prompts.assistants.items():
-            if config.get("active", False):
+            if config.get("active", True):
                 if config.get("assistant_id"):
                     logger.info(f"Loading assistant: {assistant_name}")
                     assistant_info = {
