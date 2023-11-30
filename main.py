@@ -13,7 +13,8 @@ from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 import sentry_sdk
 import uvicorn
 
-from api import router as api_router
+from api import get_router
+api_router = get_router(chat_service_instance)
 from config import settings
 from openai_assistant_manager import OpenAIAssistantManager
 from chat_service import ChatService
