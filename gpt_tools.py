@@ -1,8 +1,17 @@
-# This file can contain various utility functions to be used with the OpenAI Assistant.
+# This is a template and should be modified according to your application's needs.
 
-# Example utility function
-def example_tool():
-    # Implement the tool functionality here
-    pass
+def custom_response_formatter(response):
+    """
+    Formats the response from the OpenAI assistant in a custom way.
+    """
+    # Implement your formatting logic here
+    return formatted_response
 
-# Add more utility functions as needed
+def data_preprocessor(input_data):
+    """
+    Preprocesses input data before sending it to the OpenAI assistant.
+    """
+    # Implement your preprocessing logic here
+    return processed_data
+
+# Add more utility functions or classes as needed for your application.
