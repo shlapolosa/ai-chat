@@ -11,8 +11,10 @@ class ChatResponse(BaseModel):
     """
     Defines the structure of the chat response data.
     """
-    response: str
-    # Additional fields can be included, such as response metadata.
+    thread_id: Optional[str] = None
+    run_id: Optional[str] = None
+    message: Optional[str] = None
+    status: Optional[str] = None
 
 class CheckRunRequest(BaseModel):
     """
