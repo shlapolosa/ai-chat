@@ -1,12 +1,11 @@
-from pydantic_settings import BaseSettings
-
-from typing import Optional
+import os
+from pydantic import BaseSettings
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "FastAPI Application"
-    SENTRY_DSN: str = ""
-
-    class Config:
-        env_file = ".env"
+    openai_api_key: str = os.getenv('OPENAI_API_KEY')
+    sentry_dsn: str = os.getenv('SENTRY_DSN')
+    database_url: str = os.getenv('DATABASE_URL')
+    environment: str = os.getenv('ENVIRONMENT')
+    backend_cors_origins: str = os.getenv('BACKEND_CORS_ORIGINS')
 
 settings = Settings()
