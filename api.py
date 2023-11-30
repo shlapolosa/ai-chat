@@ -1,4 +1,3 @@
-from fastapi import APIRouter, Depends
 from fastapi import APIRouter, Depends, HTTPException, Body
 from .services.chat_service import ChatService
 from .models import ChatRequest, ChatResponse, CheckRunRequest, CheckRunResponse
@@ -27,26 +26,30 @@ async def check_run_status(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/chat", response_model=ChatResponse)
+@router.put("/chat", response_model=ChatResponse)
 async def chat_endpoint(
-    action: str = Body(..., embed=True),
-    thread_id: str = Body(..., embed=True),
-    user_input: str = Body(..., embed=True),
+    chat_request: ChatRequest,
     chat_service: ChatService = Depends()
 ):
     """
-    Endpoint to handle a chat message. This endpoint accepts an action, thread ID, 
-    and the user's input message, processes it using the ChatService, and returns 
-    the response.
+    Endpoint to handle a chat message. This endpoint accepts a ChatRequest object,
+    processes it using the ChatService, and returns the response.
     """
-    if not thread_id:
-        raise HTTPException(status_code=400, detail="Missing thread_id in the request")
-
     try:
-        run_id = await chat_service.handle_chat(action, thread_id, user_input)
-        return ChatResponse(response=run_id)  # Adjusted to match the ChatResponse model
+        run_id = await chat_service.handle_chat(
+            action=chat_request.action,
+            thread_id=chat_request.thread_id,
+            user_input=chat_request.message
+        )
+        return ChatResponse(response=run_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/start", response_model=dict)
+async def start_chat(
+    platform: str,
+    chat_service: ChatService = Depends()
+):
     """
     Endpoint to start a new conversation thread. The 'platform' parameter can be used
     to specify the type of assistant or conversation context.
