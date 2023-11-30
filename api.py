@@ -22,13 +22,13 @@ async def check_run_status(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.put("/chat", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(
     chat_request: ChatRequest,
     chat_service: ChatService = Depends()
 ):
     """
-    Endpoint to handle a chat message. This endpoint accepts a ChatRequest object,
+    POST method to handle a chat message. This endpoint accepts a ChatRequest object,
     processes it using the ChatService, and returns the response.
     """
     try:
