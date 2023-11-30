@@ -4,7 +4,7 @@ import time
 from typing import List
 
 class ChatService:
-    def __init__(self, assistant_manager):
+    def __init__(self, assistant_manager: OpenAIAssistantManager):
         self._assistant_manager = assistant_manager
 
     def get_loaded_assistants_info(self) -> List[dict]:
