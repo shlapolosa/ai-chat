@@ -5,6 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from typing import Optional
+
+# Configure structured logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 import sentry_sdk
 import uvicorn
@@ -12,12 +16,6 @@ import uvicorn
 from config import settings
 from openai_assistant_manager import OpenAIAssistantManager
 from api import router as api_router
-
-
-
-# Configure structured logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 
 
