@@ -18,3 +18,6 @@ class ChatResponse(BaseModel):
     status: Optional[str] = None
 
 
+class RootResponse(BaseModel):
+    loaded_assistants: List[dict]
+    environment_variables: dict
