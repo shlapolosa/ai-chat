@@ -1,12 +1,14 @@
-import logging
+import inspect
 import json
-import os
+import logging
 import openai
-import prompts
+import os
+from typing import Any, Dict, List, get_type_hints
+
 import gpt_tools
+import prompts
 
-
-    # Configure logging
+# Configure logging
 logger = logging.getLogger(__name__)
 
 
@@ -127,8 +129,6 @@ from typing import get_type_hints, Any, List, Dict
         tools_config.append(function_tool_config)
         return tools_config
 
-    def load_tools(self):
-        pass
 
     def upload_knowledge_files(self, filenames):
         logger.info("Uploading knowledge files...")
