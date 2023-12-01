@@ -58,8 +58,6 @@ async def check_run_status(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/chat", response_model=ChatResponse)
-from main import logger  # Ensure logger is imported at the top of the file
-
 async def chat_endpoint(
     chat_request: ChatRequest
 ):

@@ -149,8 +149,6 @@ class OpenAIAssistantManager:
         thread = self.client.beta.threads.create()
         return thread.id
 
-from main import logger  # Ensure logger is imported at the top of the file
-
     def send_message(self, thread_id, assistant_id, message):
         logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}")
         self.client.beta.threads.messages.create(
