@@ -1,4 +1,7 @@
 import logging
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env file at the start of the application
+
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
