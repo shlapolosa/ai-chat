@@ -67,14 +67,12 @@ class OpenAIAssistantManager:
 
                     file_ids = self.upload_knowledge_files(config.get("knowledge", "").split(", "))
 
-                    tools_config = self.generate_tool_configurations(config.get("tools", []))
-                    file_ids = self.upload_knowledge_files(config.get("knowledge_files", []))
                     assistant = self.client.beta.assistants.create(
                         name=assistant_name,
                         model="gpt-4-1106-preview",
                         instructions=config.get("prompt"),
-                        tools=tools_config,
-                        file_ids=file_ids
+                        tools=self.generate_tool_configurations(config.get("tools", [])),
+                        file_ids=self.upload_knowledge_files(config.get("knowledge_files", []))
                     )
                     # Store the assistant information
                     assistant_info = {
