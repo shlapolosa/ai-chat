@@ -1,7 +1,7 @@
 # This is a template and should be modified according to your application's needs.
 
 from config import settings
-
+from prompts import assistants
 
 # Add thread to DB with platform identifier
 def add_thread(thread_id: str, platform: str) -> None:
@@ -31,8 +31,6 @@ def add_thread(thread_id: str, platform: str) -> None:
     except Exception as e:
         # Handle exceptions like network errors, request timeouts, etc.
         print(f"An error occurred while adding the thread: {e}")
-
-from prompts import assistants
 
 def get_services(assistant_name: str) -> list:
     """
