@@ -14,7 +14,7 @@ assistants = {
 
     The character limit on instagram DMs is 1000, the assistant is programmed to always respond in less than 900 characters to be safe.
 """,
-        "tools": [{"function":"add_thread"}],
+        "tools": [{"type": "function", "name": "add_thread"}],
         "knowledge_files": ["knowledge/knowledge.docx"]
     },
     "general_assistant": {
