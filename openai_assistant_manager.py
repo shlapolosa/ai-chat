@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class OpenAIAssistantManager:
+#TODO: Socrates to split file into OpenAIAssistManager and APIRequestHandler files
 
     def __init__(self, openai_api_key):
         self.client = openai.OpenAI(api_key=openai_api_key)
