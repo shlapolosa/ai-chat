@@ -19,7 +19,7 @@ class ChatService:
         ]
 
     async def start_thread(self, platform: str):
-        assistant_id = self.assistant_manager.get_assistant_id_by_platform(platform)
+        assistant_id = self._assistant_manager.get_assistant_id_by_platform(platform)
         thread_id = self.assistant_manager.create_thread(assistant_id=assistant_id)
         return thread_id
 
