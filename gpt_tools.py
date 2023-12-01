@@ -32,6 +32,8 @@ def add_thread(thread_id: str, platform: str) -> None:
         # Handle exceptions like network errors, request timeouts, etc.
         print(f"An error occurred while adding the thread: {e}")
 
+from prompts import assistants
+
 def get_services(assistant_name: str) -> list:
     """
     Retrieves all available services that an assistant has through other assistants.
@@ -42,11 +44,12 @@ def get_services(assistant_name: str) -> list:
     Returns:
     A list of dictionaries, each containing the assistant name and description.
     """
-    # This is a placeholder implementation. Replace with actual logic to retrieve services.
     services = [
-        {"assistant_name": "Assistant A", "assistant_description": "Description A"},
-        {"assistant_name": "Assistant B", "assistant_description": "Description B"},
-        # Add more services as needed
+        {
+            "assistant_name": name,
+            "assistant_description": assistant.get("prompt")
+        }
+        for name, assistant in assistants.items()
     ]
     # Log the input parameter
     print(f"get_services called with assistant_name: {assistant_name}")
