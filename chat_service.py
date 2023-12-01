@@ -30,7 +30,7 @@ class ChatService:
     async def check_run_status(self, thread_id: str, run_id: str):
         start_time = time.time()
         while time.time() - start_time < 8:
-            status = self._assistant_manager.check_run_status(thread_id, run_id)
+            status = await self._assistant_manager.check_run_status(thread_id, run_id)
             if status == 'completed':
                 # Assuming there's a method to fetch and clean the message
                 message_content = self._fetch_and_clean_message(thread_id)
