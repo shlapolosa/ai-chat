@@ -40,7 +40,7 @@ class ChatService:
     def _fetch_and_clean_message(self, thread_id):
         # Fetch the latest message
         messages = self._assistant_manager.client.beta.threads.messages.list(thread_id=thread_id)
-        # Assuming the message content is always of type 'text' and extracting the 'value' directly
-        message_content = messages.data[0].content.text.value
+        # Extracting the 'value' from the 'text' attribute of the first item in the list
+        message_content = messages.data[0].content[0].text.value
         print(f"Message content before cleaning: {message_content}")
         return message_content
