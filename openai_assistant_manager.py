@@ -146,7 +146,7 @@ class OpenAIAssistantManager:
         return file_ids
 
     def create_thread(self, assistant_id):
-        thread = self.client.beta.threads.create(assistant_id=assistant_id)
+        thread = self.client.beta.threads.create(assistant=assistant_id)
         return thread.id
 
     def send_message(self, thread_id, assistant_id, message):
