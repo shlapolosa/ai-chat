@@ -199,6 +199,8 @@ class OpenAIAssistantManager:
                                 else:
                                     output = function_tool(**arguments)
                                 logger.info(f"Function output: {output}")
+                                logger.error(f"Function tool {function_name} is None.")
+                                output = None
                                 await self.client.beta.threads.runs.submit_tool_outputs(
                                     thread_id=thread_id,
                                     run_id=run_id,
@@ -208,17 +210,6 @@ class OpenAIAssistantManager:
                                     }]
                                 )
                                 logger.info(f"Submitted tool outputs for tool call ID: {tool_call.id}")
-                            else:
-                                logger.error(f"Function tool {function_name} is None.")
-                                output = None
-                                thread_id=thread_id,
-                                run_id=run_id,
-                                tool_outputs=[{
-                                    "tool_call_id": tool_call.id,
-                                    "output": json.dumps(output)
-                                }]
-                            )
-                            logger.info(f"Submitted tool outputs for tool call ID: {tool_call.id}")
             await asyncio.sleep(1)  # Sleep to avoid rapid API calls
             logger.info("Completed action processing and sleeping for 1 second.")
         return run_status.status
