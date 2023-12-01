@@ -66,7 +66,7 @@ class OpenAIAssistantManager:
                         name=assistant_name,
                         model="gpt-4-1106-preview",
                         instructions=config.get("prompt"),
-                        tools=[self.generate_tool_configurations(getattr(gpt_tools, name)) for name in config.get("tools", []) if hasattr(gpt_tools, name)],
+                        tools=[self.generate_tool_configurations(getattr(gpt_tools, tool["function"])) for tool in config.get("tools", []) if tool["type"] == "function" and hasattr(gpt_tools, tool["function"])],
                         file_ids=self.upload_knowledge_files(config.get("knowledge_files", []))
                     )
                     # Store the assistant information
