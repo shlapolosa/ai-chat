@@ -95,6 +95,9 @@ class OpenAIAssistantManager:
         logger.info("All assistants have been created.")
         return all_assistants_info
 
+    def load_tools(self):
+        pass
+
     def upload_knowledge_files(self, filenames):
         logger.info("Uploading knowledge files...")
         file_ids = []
