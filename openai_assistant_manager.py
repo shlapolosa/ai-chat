@@ -145,8 +145,8 @@ class OpenAIAssistantManager:
         logger.info("All knowledge files have been uploaded.")
         return file_ids
 
-    def create_thread(self, assistant_id):
-        thread = self.client.beta.threads.create(assistant=assistant_id)
+    def create_thread(self):
+        thread = self.client.beta.threads.create()
         return thread.id
 
     def send_message(self, thread_id, assistant_id, message):
