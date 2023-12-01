@@ -168,15 +168,29 @@ class OpenAIAssistantManager:
         )
         return run_status.status
 
-    def get_assistant_id_by_action(self, action):
-        # Example implementation; adjust based on your action-to-assistant mapping
-        action_to_assistant_map = {
-            "finance": "financial_assistant",
-            "general": "general_assistant",
-            # Add other mappings as needed
-        }
-        assistant_name = action_to_assistant_map.get(action, "default_assistant")
-        for assistant in self.assistants_info:
+    def get_assistant_id_by_name(self, assistant_name: str = None) -> str:
+        """
+        Retrieves the assistant ID for the given assistant name.
+        If the assistant name is empty or None, returns the default assistant ID.
+
+        Parameters:
+        assistant_name: The name of the assistant to retrieve the ID for.
+
+        Returns:
+        The assistant ID corresponding to the assistant name, or the default assistant ID if not specified.
+        """
+        if not assistant_name:
+            # Find and return the default assistant ID
+            for assistant in self.all_assistants_info:
+                if assistant.get("default", False):
+                    return assistant["assistant_id"]
+            # If no default is set, return None or raise an error as appropriate
+            return None
+
+        # Find and return the assistant ID for the given name
+        for assistant in self.all_assistants_info:
             if assistant["assistant_name"] == assistant_name:
                 return assistant["assistant_id"]
+
+        # If the assistant name does not exist, return None or raise an error as appropriate
         return None
