@@ -3,6 +3,7 @@
 assistants = {
     "financial_advisor": {
         "active": True,
+        "default": True,
         "assistant_id": "asst_EknR9eZItW7Hqcy1wQdPO3NO",
         "prompt":
             """
@@ -19,6 +20,7 @@ assistants = {
     },
     "general_assistant": {
         "active": False,
+        "default": False,
         "assistant_id": "",
         "prompt": [
             "Engage in general conversation.",
@@ -29,6 +31,7 @@ assistants = {
     },
     "travel_advisor": {
         "active": False,
+        "default": False,
         "assistant_id": "",
         "prompt": [
             "Suggest travel destinations.",
