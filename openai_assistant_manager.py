@@ -99,9 +99,19 @@ class OpenAIAssistantManager:
                 function_description = description_lines[0]
                 properties = {}
                 for param_name, param in signature.parameters.items():
-                    param_description = next((line.split(": ")[1] for line in description_lines if line.startswith(param_name)), "")
+                    # Determine the JSON schema type based on the Python type hint
+                    python_type = type_hints.get(param_name)
+                    json_schema_type = 'string'  # Default to string for unrecognized types
+                    if python_type == str:
+                        json_schema_type = 'string'
+                    elif python_type == int:
+                        json_schema_type = 'integer'
+                    elif python_type == bool:
+                        json_schema_type = 'boolean'
+                    # Add more type mappings as needed
+                    param_description = next((line for line in description_lines if line.startswith(param_name + ":")), "").split(": ")[1]
                     properties[param_name] = {
-                        "type": type_hints[param_name].__name__ if param_name in type_hints else "string",
+                        "type": json_schema_type,
                         "description": param_description
                     }
                 function_tool_config = {
