@@ -51,6 +51,7 @@ async def check_run_status(
     GET endpoint to check the status of a chat run using query parameters. Accepts the thread ID and run ID as query parameters,
     and returns the status of the run along with any response message.
     """
+    logger.info(f"check_run_status: Received chat request with thread_id={thread_id} and run_id={run_id}")
     try:
         message_content, status = await chat_service_instance.check_run_status(thread_id, run_id)
         return ChatResponse(thread_id=thread_id, run_id=run_id, message=message_content, status=status)
@@ -65,14 +66,14 @@ async def chat_endpoint(
     POST method to handle a chat message. This endpoint accepts a ChatRequest object,
     processes it using the ChatService, and returns the response.
     """
-    logger.info(f"chat_endpoint: Received chat request with thread_id={chat_request.thread_id} and assistant_name={chat_request.assistant_name}")
+    logger.info(f"chat_endpoint: Received chat request with values={chat_request}")
     try:
         run_id = await chat_service_instance.handle_chat(
             assistant_name=chat_request.assistant_name,
             thread_id=chat_request.thread_id,
             user_input=chat_request.message
         )
-        response = ChatResponse(response=run_id)
+        response = ChatResponse(run_id=run_id)
         logger.info(f"chat_endpoint: Completed handling chat request with run_id={run_id}")
         return response
     except Exception as e:

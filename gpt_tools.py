@@ -53,4 +53,4 @@ def get_services(assistant_name: str) -> str:
     ]
     # Log the input parameter
     print(f"get_services called with assistant_name: {assistant_name}")
-    return json.dumps(services)
+    return services
