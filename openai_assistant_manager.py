@@ -169,7 +169,7 @@ class OpenAIAssistantManager:
             thread_id=thread_id,
             run_id=run_id
         )
-        logger.info(f"check_run_status: Current run status response={run_status.status}")
+        logger.info(f"check_run_status: Current run status response={run_status}")
         if run_status.status == 'requires_action' and run_status.required_action.assistant_id:
             logger.info("Action required for the run. Processing...")
             assistant_id = run_status.required_action.assistant_id
