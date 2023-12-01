@@ -11,6 +11,7 @@ class EnvironmentVariables(BaseModel):
 
 class ChatRequest(BaseModel):
     assistant_name: Optional[str] = None
+    thread_id: Optional[str] = None
     """
     Defines the structure of the chat request data.
     """
