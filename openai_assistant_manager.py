@@ -168,6 +168,7 @@ class OpenAIAssistantManager:
             thread_id=thread_id,
             run_id=run_id
         )
+        logger.info(f"check_run_status: Current run status respone={run_status.status}")
         return run_status.status
 
     def get_assistant_id_by_name(self, assistant_name: str = None) -> str:
@@ -184,7 +185,7 @@ class OpenAIAssistantManager:
         if not assistant_name:
             # Find and return the default assistant ID
             for assistant in self.all_assistants_info:
-                if assistant.get("default", False):
+                if assistant.get("default", True):
                     return assistant["assistant_id"]
             # If no default is set, return None or raise an error as appropriate
             return None
