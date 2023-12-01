@@ -38,5 +38,11 @@ class ChatService:
         return "Run Stopped", 'timeout'
 
     def _fetch_and_clean_message(self, thread_id):
-        # Fetch the message and clean it up as required
-        return "Cleaned message content"  # Placeholder
+        # Fetch the latest message
+        messages = self._assistant_manager.client.beta.threads.messages.list(thread_id=thread_id)
+        message_content = messages.data[0].content
+        # Remove annotations
+        annotations = message_content.annotations
+        for annotation in annotations:
+            message_content = message_content.replace(annotation.text, '')
+        return message_content
