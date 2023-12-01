@@ -98,34 +98,34 @@ class OpenAIAssistantManager:
 import inspect
 from typing import get_type_hints, Any, List, Dict
 
-def generate_tool_configurations(function_tool: Any) -> List[Dict]:
-    tools_config = [{"type": "retrieval"}]
-    signature = inspect.signature(function_tool)
-    type_hints = get_type_hints(function_tool)
-    docstring = inspect.getdoc(function_tool)
-    description_lines = docstring.split("\n")
-    function_description = description_lines[0]
-    properties = {}
-    for param_name, param in signature.parameters.items():
-        param_description = next((line.split(": ")[1] for line in description_lines if line.startswith(param_name)), "")
-        properties[param_name] = {
-            "type": type_hints[param_name].__name__ if param_name in type_hints else "string",
-            "description": param_description
-        }
-    function_tool_config = {
-        "type": "function",
-        "function": {
-            "name": function_tool.__name__,
-            "description": function_description,
-            "parameters": {
-                "type": "object",
-                "properties": properties,
-                "required": list(signature.parameters.keys())
+    def generate_tool_configurations(self, function_tool: Any) -> List[Dict]:
+        tools_config = [{"type": "retrieval"}]
+        signature = inspect.signature(function_tool)
+        type_hints = get_type_hints(function_tool)
+        docstring = inspect.getdoc(function_tool)
+        description_lines = docstring.split("\n")
+        function_description = description_lines[0]
+        properties = {}
+        for param_name, param in signature.parameters.items():
+            param_description = next((line.split(": ")[1] for line in description_lines if line.startswith(param_name)), "")
+            properties[param_name] = {
+                "type": type_hints[param_name].__name__ if param_name in type_hints else "string",
+                "description": param_description
+            }
+        function_tool_config = {
+            "type": "function",
+            "function": {
+                "name": function_tool.__name__,
+                "description": function_description,
+                "parameters": {
+                    "type": "object",
+                    "properties": properties,
+                    "required": list(signature.parameters.keys())
+                }
             }
         }
-    }
-    tools_config.append(function_tool_config)
-    return tools_config
+        tools_config.append(function_tool_config)
+        return tools_config
 
     def load_tools(self):
         pass
