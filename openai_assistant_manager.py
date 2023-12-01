@@ -67,22 +67,15 @@ class OpenAIAssistantManager:
 
                     file_ids = self.upload_knowledge_files(config.get("knowledge", "").split(", "))
 
-                    # Create the assistant using the OpenAI API
-                    # assistant = self.client.beta.assistants.create(
-                    #     name=assistant_name,
-                    #     model="gpt-3.5-turbo",
-                    #     instruction=config.get("prompt"),
-                    #     tools=tools,
-                    #     file_ids= file_ids                       
-                    # )
+                    tools_config = self.generate_tool_configurations(config.get("tools", []))
+                    file_ids = self.upload_knowledge_files(config.get("knowledge_files", []))
                     assistant = self.client.beta.assistants.create(
-                        # Change prompting in prompts.py file
-                        instructions="Be nice",
+                        name=assistant_name,
                         model="gpt-4-1106-preview",
-                        tools=[{
-                            "type": "retrieval"  # This adds the knowledge base as a tool
-                        }],
-                        file_ids=file_ids)
+                        instructions=config.get("prompt"),
+                        tools=tools_config,
+                        file_ids=file_ids
+                    )
                     # Store the assistant information
                     assistant_info = {
                         "assistant_name": assistant_name,
