@@ -181,10 +181,13 @@ class OpenAIAssistantManager:
                 # Handle the function call
                 for tool_call in run_status.required_action.submit_tool_outputs.tool_calls:
                     function_name = tool_call.function.name
-                    logger.info(f"Processing tool call for function: {function_name}")
+                    logger.info(f"Processing tool call for function: {function_name} and assistant_config: {assistant_config.get('tools', [])}")
+                    logger.info(f"The check for function name returns: {function_name in assistant_config.get('tools', [])}")
+                    
                     if function_name in assistant_config.get("tools", []):
                         # Process the function call
                         function_tool = getattr(gpt_tools, function_name, None)
+                        logger.info(f"Function toot: {function_tool}")
                         if function_tool:
                             logger.info(f"Found function tool: {function_name}")
                             arguments = json.loads(tool_call.function.arguments)
