@@ -67,7 +67,7 @@ class OpenAIAssistantManager:
                         "name": assistant_name,
                         "model": "gpt-4-1106-preview",
                         "instructions": config.get("prompt"),
-                        "tools": [self.generate_tool_configurations(getattr(gpt_tools, tool["function"])) for tool in config.get("tools", []) if "type" in tool and tool["type"] == "function" and hasattr(gpt_tools, tool["function"])],
+                        "tools": [self.generate_tool_configurations(getattr(gpt_tools, tool["function"])) for tool in config.get("tools", []) if tool.get("type") == "function" and "function" in tool and hasattr(gpt_tools, tool["function"])],
                         "file_ids": self.upload_knowledge_files(config.get("knowledge_files", []))
                     }
                     logger.info(f"Creating assistant with parameters: {assistant_creation_params}")
