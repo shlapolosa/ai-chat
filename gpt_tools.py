@@ -19,7 +19,14 @@ def data_preprocessor(input_data):
 
 
 # Add thread to DB with platform identifier
-def add_thread(thread_id, platform):
+def add_thread(thread_id: str, platform: str) -> None:
+    """
+    Adds a new thread to the database with the given thread ID and platform.
+
+    Parameters:
+    thread_id: The unique identifier for the thread.
+    platform: The name of the platform where the thread originated.
+    """
     url = "https://api.airtable.com/v0/app9KJE69rZ0WLnpV/Threads" # replace this with your Airtable Web API URL
     headers = {
         "Authorization": settings.airtable_api_key,
