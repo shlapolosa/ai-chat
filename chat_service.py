@@ -41,6 +41,7 @@ class ChatService:
         # Fetch the latest message
         messages = self._assistant_manager.client.beta.threads.messages.list(thread_id=thread_id)
         message_content = messages.data[0].content
+        print(f"Message content before cleaning: {message_content}")
         # Remove annotations
         annotations = message_content.annotations
         for annotation in annotations:
