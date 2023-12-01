@@ -169,24 +169,30 @@ class OpenAIAssistantManager:
             run_id=run_id
         )
         logger.info(f"check_run_status: Current run status response={run_status.status}")
-        if run_status.status == 'requires_action':
+        if run_status.status == 'requires_action' and run_status.required_action.assistant_id:
             logger.info("Action required for the run. Processing...")
-            # Handle the function call
-            for tool_call in run_status.required_action.submit_tool_outputs.tool_calls:
-                if tool_call.function.name == "add_thread":
-                    # Process thread addition
-                    arguments = json.loads(tool_call.function.arguments)
-                    # Assuming there is a method to handle the 'add_thread' action
-                    output = self.handle_add_thread(arguments["thread_id"], arguments["platform"])
-                    self.client.beta.threads.runs.submit_tool_outputs(
-                        thread_id=thread_id,
-                        run_id=run_id,
-                        tool_outputs=[{
-                            "tool_call_id": tool_call.id,
-                            "output": json.dumps(output)
-                        }]
-                    )
-            time.sleep(1)  # Sleep to avoid rapid API calls
+            assistant_id = run_status.required_action.assistant_id
+            # Find the corresponding assistant configuration
+            assistant_config = next((config for config in prompts.assistants.values() if config.get("assistant_id") == assistant_id), None)
+            if assistant_config:
+                # Handle the function call
+                for tool_call in run_status.required_action.submit_tool_outputs.tool_calls:
+                    function_name = tool_call.function.name
+                    if function_name in assistant_config.get("tools", []):
+                        # Process the function call
+                        function_tool = getattr(gpt_tools, function_name, None)
+                        if function_tool:
+                            arguments = json.loads(tool_call.function.arguments)
+                            output = await function_tool(**arguments)
+                            await self.client.beta.threads.runs.submit_tool_outputs(
+                                thread_id=thread_id,
+                                run_id=run_id,
+                                tool_outputs=[{
+                                    "tool_call_id": tool_call.id,
+                                    "output": json.dumps(output)
+                                }]
+                            )
+            await asyncio.sleep(1)  # Sleep to avoid rapid API calls
         return run_status.status
 
     def get_assistant_id_by_name(self, assistant_name: str = None) -> str:
