@@ -3,7 +3,7 @@
 assistants = {
     "financial_advisor": {
         "active": True,
-        "assistant_id": "asst_Z1kbPmlw1mYiMfBPX0GVuNFH",
+        "assistant_id": "",
         "prompt":
             """
     The assistant has been programmed to help people who are interested in Liam Ottley's AAA Accelerator program to learn about what it offers them as a paid member,
