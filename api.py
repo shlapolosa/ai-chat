@@ -67,7 +67,7 @@ async def chat_endpoint(
     """
     try:
         run_id = await chat_service_instance.handle_chat(
-            action=chat_request.action,
+            assistant_name=chat_request.assistant_name,
             thread_id=chat_request.thread_id,
             user_input=chat_request.message
         )

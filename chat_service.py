@@ -22,8 +22,8 @@ class ChatService:
         thread_id = self._assistant_manager.create_thread()
         return thread_id
 
-    async def handle_chat(self, action: str, thread_id: str, user_input: str):
-        assistant_id = self._assistant_manager.get_assistant_id_by_action(action)
+    async def handle_chat(self, assistant_name: str, thread_id: str, user_input: str):
+        assistant_id = self._assistant_manager.get_assistant_id_by_name(assistant_name)
         run_id = self._assistant_manager.send_message(thread_id, assistant_id, user_input)
         return run_id
 
