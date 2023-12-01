@@ -27,15 +27,7 @@ def add_thread(thread_id: str, platform: str) -> None:
     }
 
     try:
-        response = requests.post(url, headers=headers, json=data)
-
-        if response.status_code == 200:
-            print("Thread added to DB successfully.")
-        else:
-        # Handle non-200 HTTP response status codes
-            print(
-                f"Failed to add thread: HTTP Status Code {response.status_code}, Response: {response.text}"
-            )
+        print(f"An error occurred while adding the thread: {e}")
     except Exception as e:
         # Handle exceptions like network errors, request timeouts, etc.
         print(f"An error occurred while adding the thread: {e}")
