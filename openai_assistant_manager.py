@@ -170,9 +170,11 @@ class OpenAIAssistantManager:
             run_id=run_id
         )
         logger.info(f"check_run_status: Current run status response={run_status.status}")
-        if run_status.status == 'requires_action' and run_status.required_action.assistant_id:
+        if run_status.status == 'requires_action' and hasattr(run_status.required_action, 'assistant_id'):
             logger.info("Action required for the run. Processing...")
-            assistant_id = run_status.required_action.assistant_id
+            # Assuming the assistant_id is nested within the required_action object, adjust the access accordingly
+            # Replace 'your_attribute_path' with the correct path to the assistant_id within the required_action object
+            assistant_id = run_status.required_action.your_attribute_path
             logger.info(f"Assistant ID for action: {assistant_id}")
             # Find the corresponding assistant configuration
             assistant_config = next((config for config in prompts.assistants.values() if config.get("assistant_id") == assistant_id), None)
