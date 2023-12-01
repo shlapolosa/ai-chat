@@ -31,12 +31,11 @@ class ChatService:
         start_time = time.time()
         while time.time() - start_time < 8:
             status = await self._assistant_manager.check_run_status(thread_id, run_id)
-            if status == 'completed':
-                # Assuming there's a method to fetch and clean the message
-                message_content = self._fetch_and_clean_message(thread_id)
-                return message_content, 'completed'
+            if status in ['completed', 'expired', 'cancelled', 'failed']:
+                message_content = "Run Stopped" if status != 'completed' else self._fetch_and_clean_message(thread_id)
+                return message_content, status
             await asyncio.sleep(1)
-        return "timeout", 'timeout'
+        return "Run Stopped", 'timeout'
 
     def _fetch_and_clean_message(self, thread_id):
         # Fetch the message and clean it up as required
