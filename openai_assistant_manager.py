@@ -121,30 +121,30 @@ class OpenAIAssistantManager:
             if filename:
                 logger.info(f"Uploading file: {filename}")
                 with open(filename, "rb") as file:
-                    uploaded_file = self._client.files.create(file=file, purpose='answers')
+                    uploaded_file = self.client.files.create(file=file, purpose='answers')
                     file_ids.append(uploaded_file.id)
                     logger.info(f"File uploaded with ID: {uploaded_file.id}")
         logger.info("All knowledge files have been uploaded.")
         return file_ids
 
     def create_thread(self, assistant_id):
-        thread = self._client.beta.threads.create(assistant_id=assistant_id)
+        thread = self.client.beta.threads.create(assistant_id=assistant_id)
         return thread.id
 
     def send_message(self, thread_id, assistant_id, message):
-        self._client.beta.threads.messages.create(
+        self.client.beta.threads.messages.create(
             thread_id=thread_id,
             role="user",
             content=message
         )
-        run = self._client.beta.threads.runs.create(
+        run = self.client.beta.threads.runs.create(
             thread_id=thread_id,
             assistant_id=assistant_id
         )
         return run.id
 
     def check_run_status(self, thread_id, run_id):
-        run_status = self._client.beta.threads.runs.retrieve(
+        run_status = self.client.beta.threads.runs.retrieve(
             thread_id=thread_id,
             run_id=run_id
         )
