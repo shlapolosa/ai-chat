@@ -168,7 +168,25 @@ class OpenAIAssistantManager:
             thread_id=thread_id,
             run_id=run_id
         )
-        logger.info(f"check_run_status: Current run status respone={run_status.status}")
+        logger.info(f"check_run_status: Current run status response={run_status.status}")
+        if run_status.status == 'requires_action':
+            logger.info("Action required for the run. Processing...")
+            # Handle the function call
+            for tool_call in run_status.required_action.submit_tool_outputs.tool_calls:
+                if tool_call.function.name == "add_thread":
+                    # Process thread addition
+                    arguments = json.loads(tool_call.function.arguments)
+                    # Assuming there is a method to handle the 'add_thread' action
+                    output = self.handle_add_thread(arguments["thread_id"], arguments["platform"])
+                    self.client.beta.threads.runs.submit_tool_outputs(
+                        thread_id=thread_id,
+                        run_id=run_id,
+                        tool_outputs=[{
+                            "tool_call_id": tool_call.id,
+                            "output": json.dumps(output)
+                        }]
+                    )
+            time.sleep(1)  # Sleep to avoid rapid API calls
         return run_status.status
 
     def get_assistant_id_by_name(self, assistant_name: str = None) -> str:
