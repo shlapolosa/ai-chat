@@ -77,11 +77,11 @@ async def chat_endpoint(
 
 @router.put("/chat", response_model=ChatResponse)
 async def start_chat(
-    platform: str
+    assistant_name: str = None
 ):
     """
-    Endpoint to handle a chat message. This endpoint accepts a platform parameter,
+    Endpoint to handle a chat message. This endpoint accepts an assistant_name parameter,
     starts a new conversation thread, and returns the thread ID.
     """
-    thread_id = await chat_service_instance.start_thread(platform)
+    thread_id = await chat_service_instance.start_thread(assistant_name)
     return ChatResponse(thread_id=thread_id)
