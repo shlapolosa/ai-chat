@@ -123,7 +123,7 @@ class OpenAIAssistantManager:
             if filename:
                 logger.info(f"Uploading file: {filename}")
                 with open(filename, "rb") as file:
-                    uploaded_file = self.client.files.create(file=file, purpose='answers')
+                    uploaded_file = self.client.files.create(file=file, purpose='assistants')
                     file_ids.append(uploaded_file.id)
                     logger.info(f"File uploaded with ID: {uploaded_file.id}")
         logger.info("All knowledge files have been uploaded.")
