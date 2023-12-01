@@ -163,7 +163,7 @@ class OpenAIAssistantManager:
         logger.info(f"send_message: Message sent with run_id={run.id}")
         return run.id
 
-    def check_run_status(self, thread_id, run_id):
+    async def check_run_status(self, thread_id, run_id):
         run_status = self.client.beta.threads.runs.retrieve(
             thread_id=thread_id,
             run_id=run_id
