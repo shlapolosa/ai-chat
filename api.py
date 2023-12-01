@@ -34,6 +34,7 @@ async def read_root():
         "loaded_assistants": loaded_assistants,
         "configuration": {
             "OPEN_API_KEY": settings.openai_api_key,
+            "AIRTABLE_API_KEY": settings.airtable_api_key,
             "PROJECT_NAME": settings.PROJECT_NAME,
             "SENTRY_DSN": settings.SENTRY_DSN,
             "DATABASE_URL": settings.database_url,
