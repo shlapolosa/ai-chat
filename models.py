@@ -10,6 +10,7 @@ class EnvironmentVariables(BaseModel):
     value: str
 
 class ChatRequest(BaseModel):
+    assistant_name: Optional[str] = None
     """
     Defines the structure of the chat request data.
     """
