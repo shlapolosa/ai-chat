@@ -97,8 +97,6 @@ class OpenAIAssistantManager:
         logger.info("All assistants have been created.")
         return all_assistants_info
 
-import inspect
-from typing import get_type_hints, Any, List, Dict
 
     def generate_tool_configurations(self, function_tool: Any) -> List[Dict]:
         tools_config = [{"type": "retrieval"}]
