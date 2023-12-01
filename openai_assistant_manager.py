@@ -173,18 +173,24 @@ class OpenAIAssistantManager:
         if run_status.status == 'requires_action' and run_status.required_action.assistant_id:
             logger.info("Action required for the run. Processing...")
             assistant_id = run_status.required_action.assistant_id
+            logger.info(f"Assistant ID for action: {assistant_id}")
             # Find the corresponding assistant configuration
             assistant_config = next((config for config in prompts.assistants.values() if config.get("assistant_id") == assistant_id), None)
             if assistant_config:
+                logger.info(f"Found assistant configuration for assistant ID {assistant_id}")
                 # Handle the function call
                 for tool_call in run_status.required_action.submit_tool_outputs.tool_calls:
                     function_name = tool_call.function.name
+                    logger.info(f"Processing tool call for function: {function_name}")
                     if function_name in assistant_config.get("tools", []):
                         # Process the function call
                         function_tool = getattr(gpt_tools, function_name, None)
                         if function_tool:
+                            logger.info(f"Found function tool: {function_name}")
                             arguments = json.loads(tool_call.function.arguments)
+                            logger.info(f"Function arguments: {arguments}")
                             output = await function_tool(**arguments)
+                            logger.info(f"Function output: {output}")
                             await self.client.beta.threads.runs.submit_tool_outputs(
                                 thread_id=thread_id,
                                 run_id=run_id,
@@ -193,7 +199,9 @@ class OpenAIAssistantManager:
                                     "output": json.dumps(output)
                                 }]
                             )
+                            logger.info(f"Submitted tool outputs for tool call ID: {tool_call.id}")
             await asyncio.sleep(1)  # Sleep to avoid rapid API calls
+            logger.info("Completed action processing and sleeping for 1 second.")
         return run_status.status
 
     def get_assistant_id_by_name(self, assistant_name: str = None) -> str:
