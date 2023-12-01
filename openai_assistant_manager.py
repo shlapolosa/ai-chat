@@ -193,12 +193,23 @@ class OpenAIAssistantManager:
                             logger.info(f"Found function tool: {function_name}")
                             arguments = json.loads(tool_call.function.arguments)
                             logger.info(f"Function arguments: {arguments}")
-                            if function_tool is not None and asyncio.iscoroutinefunction(function_tool):
-                                output = await function_tool(**arguments)
+                            if function_tool:
+                                if asyncio.iscoroutinefunction(function_tool):
+                                    output = await function_tool(**arguments)
+                                else:
+                                    output = function_tool(**arguments)
                                 logger.info(f"Function output: {output}")
                                 await self.client.beta.threads.runs.submit_tool_outputs(
+                                    thread_id=thread_id,
+                                    run_id=run_id,
+                                    tool_outputs=[{
+                                        "tool_call_id": tool_call.id,
+                                        "output": json.dumps(output)
+                                    }]
+                                )
+                                logger.info(f"Submitted tool outputs for tool call ID: {tool_call.id}")
                             else:
-                                logger.error(f"Function tool {function_name} is not awaitable or is None.")
+                                logger.error(f"Function tool {function_name} is None.")
                                 output = None
                                 thread_id=thread_id,
                                 run_id=run_id,
