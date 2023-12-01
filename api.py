@@ -58,6 +58,8 @@ async def check_run_status(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/chat", response_model=ChatResponse)
+from main import logger  # Ensure logger is imported at the top of the file
+
 async def chat_endpoint(
     chat_request: ChatRequest
 ):
@@ -65,14 +67,18 @@ async def chat_endpoint(
     POST method to handle a chat message. This endpoint accepts a ChatRequest object,
     processes it using the ChatService, and returns the response.
     """
+    logger.info(f"chat_endpoint: Received chat request with thread_id={chat_request.thread_id} and assistant_name={chat_request.assistant_name}")
     try:
         run_id = await chat_service_instance.handle_chat(
             assistant_name=chat_request.assistant_name,
             thread_id=chat_request.thread_id,
             user_input=chat_request.message
         )
-        return ChatResponse(response=run_id)
+        response = ChatResponse(response=run_id)
+        logger.info(f"chat_endpoint: Completed handling chat request with run_id={run_id}")
+        return response
     except Exception as e:
+        logger.error(f"chat_endpoint: Error handling chat request - {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/chat", response_model=ChatResponse)

@@ -149,7 +149,10 @@ class OpenAIAssistantManager:
         thread = self.client.beta.threads.create()
         return thread.id
 
+from main import logger  # Ensure logger is imported at the top of the file
+
     def send_message(self, thread_id, assistant_id, message):
+        logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}")
         self.client.beta.threads.messages.create(
             thread_id=thread_id,
             role="user",
@@ -159,6 +162,7 @@ class OpenAIAssistantManager:
             thread_id=thread_id,
             assistant_id=assistant_id
         )
+        logger.info(f"send_message: Message sent with run_id={run.id}")
         return run.id
 
     def check_run_status(self, thread_id, run_id):

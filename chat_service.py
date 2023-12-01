@@ -22,9 +22,13 @@ class ChatService:
         thread_id = self._assistant_manager.create_thread()
         return thread_id
 
+from main import logger  # Ensure logger is imported at the top of the file
+
     async def handle_chat(self, assistant_name: str, thread_id: str, user_input: str):
+        logger.info(f"handle_chat: Starting to handle chat with thread_id={thread_id}, assistant_name={assistant_name}")
         assistant_id = self._assistant_manager.get_assistant_id_by_name(assistant_name)
         run_id = self._assistant_manager.send_message(thread_id, assistant_id, user_input)
+        logger.info(f"handle_chat: Message sent with run_id={run_id}")
         return run_id
 
     async def check_run_status(self, thread_id: str, run_id: str):
