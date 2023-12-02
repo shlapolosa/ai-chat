@@ -4,12 +4,13 @@ import decimal
 import random
 
 import requests
-from django.conf import settings
 import json
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
+
+from config import settings
 
 
 # Retrieve the client_id and client_secret from the .env file
