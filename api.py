@@ -46,9 +46,7 @@ async def read_root():
     }
 
 @router.get("/chat", response_model=ChatResponse)
-async def check_run_status(
-    thread_id: str, run_id: str
-):
+async def check_run_status(thread_id: str, run_id: str):
     """
     GET endpoint to check the status of a chat run using query parameters. Accepts the thread ID and run ID as query parameters,
     and returns the status of the run along with any response message.
@@ -98,7 +96,7 @@ import json
 
 @router.get("/getOAuthCode")
 def oauth_callback(code, state):
-    from nedbank_api import token_heavy, make_payment_function
+    from nedbank_api import token_heavy, make_payment_function, write_cache, read_cache
     if code:
         if state == "payment-request":
             token_response = token_heavy(code)

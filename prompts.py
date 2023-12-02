@@ -4,7 +4,7 @@ assistants = {
     "personal_banker": {
         "active": True,
         "default": True,
-        "assistant_id": "asst_MoTovJUBSyIeUHTbOQrEQWTw",
+        "assistant_id": "",
         "prompt":
             """
     The assistant has been programmed to help people who are interested in banking enquiries, it is a personal banker,
@@ -19,14 +19,15 @@ assistants = {
 
     The assistant also has help from other Assistants in case the question requires specific help or is asking what services are available.
     
-    The assistant must always call the get_services function on every request.
-
     The services that the assistant can provide are accessed via the get_services function
 
     The assistant must always include the information returned back from the function get_service in the form, 'Additional services inclue' then a list exactly as per the function call but in a printable fashion. if assistant could not get an output from the service, assistant must give indication of what went wrong.
 
+    When asked about an authorisation url or request, always use the get_authorisation_url function
+    to return the link for user to click on.
+
 """,
-        "tools": [{"type": "retrieval"},{"type": "function", "name": "get_services"}],
+        "tools": [{"type": "retrieval"}, {"type": "function", "name": "get_services"}],
         "knowledge_files": ["knowledge/knowledge.docx"]
     },
     "general_assistant": {
@@ -37,7 +38,10 @@ assistants = {
             "Engage in general conversation.",
             "Provide information on a wide range of topics."
         ],
-        "tools": [{"type": "retrieval"}],
+        "tools": [{"type": "retrieval"},
+                  {"type": "function", "name": "get_balance"},
+                  {"type": "function", "name": "get_authorisation_url"}
+                  ],
         "knowledge_files": ["general_knowledge.json"]
     },
     "travel_advisor": {

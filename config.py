@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     environment: Optional[str] = os.getenv('ENVIRONMENT', 'development')
     backend_cors_origins: Optional[str] = os.getenv('BACKEND_CORS_ORIGINS', '*')
 
+    NB_CLIENT_ID: Optional[str] = os.getenv('NB_CLIENT_ID')
     NB_CLIENT_SECRET: Optional[str] = os.getenv('NB_CLIENT_SECRET')
     NB_FINANCIAL_ID: Optional[str] = os.getenv('NB_FINANCIAL_ID')
     NB_REDIRECT_URL: Optional[str] = os.getenv('NB_REDIRECT_URL')
