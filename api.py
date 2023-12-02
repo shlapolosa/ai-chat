@@ -1,7 +1,9 @@
+import fastapi
 from fastapi import APIRouter, Depends, HTTPException, Body, Response
 from main import logger
 from chat_service import ChatService
 from models import ChatRequest, ChatResponse
+from nedbank_api import write_cache, read_cache, make_payment_function, token_light
 from openai_assistant_manager import OpenAIAssistantManager
 from config import settings
 import os
@@ -90,3 +92,30 @@ async def start_chat(
     """
     thread_id = await chat_service_instance.start_thread(assistant_name)
     return ChatResponse(thread_id=thread_id)
+
+
+import json
+
+@router.get("/getOAuthCode")
+def oauth_callback(code, state):
+    from nedbank_api import token_heavy, make_payment_function
+    if code:
+        if state == "payment-request":
+            token_response = token_heavy(code)
+            access_token = token_response.get("access_token")
+            write_cache('payment_refresh_token', token_response.get("refresh_token"))
+            write_cache('payment_access_token', token_response.get("access_token"))
+            amount = read_cache('payment_amount')
+            consent_id = read_cache('payment_consent_id')
+            make_payment_function(amount, consent_id, access_token)
+        else:
+            token_response = token_heavy(code)
+            write_cache('refresh_token', token_response.get("refresh_token"))
+            write_cache('access_token', token_response.get("access_token"))
+        # request.session.set_expiry(token_response.get("expires_id"))
+        return {'status': 'ok'}
+    return ''
+    # return
+    #     'error': request.GET.get('error'),
+    #     'error_description': request.GET.get('error_description'),
+    # })

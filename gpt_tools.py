@@ -54,3 +54,25 @@ def get_services(assistant_name: str) -> str:
     # Log the input parameter
     print(f"get_services called with assistant_name: {assistant_name}")
     return services
+
+
+def get_authorisation_url(amount):
+    """
+    Get authorisation link for confirming payment.
+
+    Parameters:
+    amount: How much should be paid
+
+    Returns:
+    The url for me to authorise the payment.
+    """
+
+    from nedbank_api import write_cache
+    import decimal
+    from nedbank_api import token_light, create_payment_intent
+    bearer_token = token_light("payments")
+    amount = decimal.Decimal('53.6')
+    consent_id, redirect_url = create_payment_intent(bearer_token, amount)
+    write_cache('payment_amount', str(amount))
+    write_cache('payment_consent_id', consent_id)
+    return redirect_url
