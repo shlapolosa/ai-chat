@@ -1,0 +1,1576 @@
+{
+	"info": {
+		"_postman_id": "965708f8-b20a-480b-b586-687a1a825b14",
+		"name": "Payments API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5582195"
+	},
+	"item": [
+		{
+			"name": "1 Request token (light)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//script to set environment variable for light token and display on command line\r",
+							"var JSONData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"light_token\", JSONData.access_token);\r",
+							"\r",
+							"//test script for validating responses\r",
+							"\r",
+							"pm.test(\"status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"light token is retrieved\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"access_token\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"description": "The data type the endpoint will accept."
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text",
+						"description": "The data type being sent to the endpoint."
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "<YOUR CLIENT ID>",
+							"description": "The client ID you received when creating the app on the portal.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "<YOUR CLIENT SECRET>",
+							"description": "The client secret you received when creating the app on the portal.",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"description": "The grant type to be used.",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "payments",
+							"description": "Scope of the api call.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/token",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"sandbox",
+						"nboauth",
+						"oauth20",
+						"token"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"description": "The data type the endpoint will accept"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text",
+								"description": "The data type being sent to the endpoint"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "<YOUR CLIENT ID>",
+									"description": "The client ID you received when creating the app on the portal.",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "<YOUR CLIENT SECRET>",
+									"description": "The client secret you received when creating the app on the portal.",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"description": "The grant type to be used",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "payments",
+									"description": "Scope of the api call",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/token",
+							"protocol": "https",
+							"host": [
+								"api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"sandbox",
+								"nboauth",
+								"oauth20",
+								"token"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access_token\": \"CZ2XMdlmlb4KYhFR8snN\",\n    \"scope\": \"payments\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3599\n}"
+				}
+			]
+		},
+		{
+			"name": "2 Create intent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var JSONData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"consent_id\", JSONData.Data.ConsentId);\r",
+							"\r",
+							"pm.collectionVariables.set(\"instruction_identification\", JSONData.Data.Initiation.InstructionIdentification);\r",
+							"pm.collectionVariables.set(\"endtoend_identification\", JSONData.Data.Initiation.EndToEndIdentification);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"description": "The data type being sent to the endpoint."
+					},
+					{
+						"key": "x-fapi-financial-id",
+						"value": "OB/2017/001",
+						"type": "text",
+						"description": "Financial ID."
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"description": "The data type the endpoint will accept"
+					},
+					{
+						"key": "x-idempotency-key",
+						"value": "<RANDOM INTEGER>",
+						"type": "text",
+						"description": "Random integer. Must be unique for every call"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{light_token}}",
+						"type": "text",
+						"description": "The access token you received from the previous call. Replace <ACCESS_TOKEN> with the access token you received."
+					},
+					{
+						"key": "x-ibm-client-id",
+						"value": "<YOUR CLIENT ID>",
+						"type": "text",
+						"description": "The client ID you received when creating the app on the portal."
+					},
+					{
+						"key": "x-ibm-client-secret",
+						"value": "<YOUR CLIENT SECRET>",
+						"type": "text",
+						"description": "The client secret you received when creating the app on the portal."
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Data\": {\r\n        \"ReadRefundAccount\": \"Yes\",\r\n        \"Initiation\": {\r\n            \"InstructionIdentification\": \"abc112\",\r\n            \"EndToEndIdentification\": \"def123\",\r\n            \"InstructedAmount\": {\r\n                \"Amount\": \"55.60\",\r\n                \"Currency\": \"ZAR\"\r\n            },\r\n            \"CreditorAccount\": {\r\n                \"SchemeName\": \"SortCodeAccountNumber\",\r\n                \"Identification\": \"1987651009427726\",\r\n                \"Name\": \"ACME Inc\",\r\n                \"SecondaryIdentification\": \"1009427726\"\r\n            },\r\n            \"RemittanceInformation\": {\r\n                \"Unstructured\": \"Maintenance Fee\",\r\n                \"Reference\": \"FRESCO-101\"\r\n            }\r\n        }\r\n    },\r\n    \"Risk\": {\r\n        \"PaymentContextCode\": \"EcommerceMerchantInitiatedPayment\",\r\n        \"ContractPresentInidicator\": false,\r\n        \"PaymentPurposeCode\": \"EPAY\",\r\n        \"BeneficiaryPrepopulatedIndicator\": false,\r\n        \"BeneficiaryAccountType\": \"Business\",\r\n        \"MerchantCustomerIdentification\": \"1234567891\",\r\n        \"DeliveryAddress\": {\r\n            \"AddressLine\": [\r\n                \"25 Queen Victoria Street\",\r\n                \"Acacia Lodge\"\r\n            ],\r\n            \"StreetName\": \"Kromdraai Road\",\r\n            \"BuildingNumber\": \"25\",\r\n            \"PostCode\": \"7872\",\r\n            \"TownName\": \"Hout Bay\",\r\n            \"CountrySubDivision\": \"Gauteng\",\r\n            \"Country\": \"ZA\"\r\n        }\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payment-consents",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"sandbox",
+						"open-banking",
+						"v3.1",
+						"pisp",
+						"domestic-payment-consents"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"description": "The data type being sent to the endpoint.",
+								"type": "text"
+							},
+							{
+								"key": "x-fapi-financial-id",
+								"value": "OB/2017/001",
+								"type": "text",
+								"description": "Financial ID"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"description": "content type"
+							},
+							{
+								"key": "x-idempotency-key",
+								"value": "<RANDOM INTEGER>",
+								"type": "text",
+								"description": "Random integer. Must be unique for every call"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text",
+								"description": "The access token you received from the previous call. Replace <ACCESS_TOKEN> with the access token you received."
+							},
+							{
+								"key": "x-ibm-client-id",
+								"value": "<YOUR CLIENT ID>",
+								"type": "text",
+								"description": "The client ID you received when creating the app on the portal."
+							},
+							{
+								"key": "x-ibm-client-secret",
+								"value": "<YOUR CLIENT SECRET>",
+								"type": "text",
+								"description": "The client secret you received when creating the app on the portal."
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Data\": {\r\n        \"ReadRefundAccount\": \"Yes\",\r\n        \"Initiation\": {\r\n            \"InstructionIdentification\": \"abc112\",\r\n            \"EndToEndIdentification\": \"def123\",\r\n            \"InstructedAmount\": {\r\n                \"Amount\": \"55.60\",\r\n                \"Currency\": \"ZAR\"\r\n            },\r\n            \"CreditorAccount\": {\r\n                \"SchemeName\": \"SortCodeAccountNumber\",\r\n                \"Identification\": \"1987651009427726\",\r\n                \"Name\": \"ACME Inc\",\r\n                \"SecondaryIdentification\": \"1009427726\"\r\n            },\r\n            \"RemittanceInformation\": {\r\n                \"Unstructured\": \"Maintenance Fee\",\r\n                \"Reference\": \"FRESCO-101\"\r\n            }\r\n        }\r\n    },\r\n    \"Risk\": {\r\n        \"PaymentContextCode\": \"EcommerceMerchantInitiatedPayment\",\r\n        \"ContractPresentInidicator\": false,\r\n        \"PaymentPurposeCode\": \"EPAY\",\r\n        \"BeneficiaryPrepopulatedIndicator\": false,\r\n        \"BeneficiaryAccountType\": \"Business\",\r\n        \"MerchantCustomerIdentification\": \"1234567891\",\r\n        \"DeliveryAddress\": {\r\n            \"AddressLine\": [\r\n                \"25 Queen Victoria Street\",\r\n                \"Acacia Lodge\"\r\n            ],\r\n            \"StreetName\": \"Kromdraai Road\",\r\n            \"BuildingNumber\": \"25\",\r\n            \"PostCode\": \"7872\",\r\n            \"TownName\": \"Hout Bay\",\r\n            \"CountrySubDivision\": \"Gauteng\",\r\n            \"Country\": \"ZA\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payment-consents",
+							"protocol": "https",
+							"host": [
+								"api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"sandbox",
+								"open-banking",
+								"v3.1",
+								"pisp",
+								"domestic-payment-consents"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Data\": {\n        \"ConsentId\": \"01HCY05JA2ENJQ2GQXQH0NSG5S\",\n        \"Status\": \"AwaitingAuthorisation\",\n        \"CreationDateTime\": \"2022-12-28T05:09:46+00:00\",\n        \"StatusUpdateDateTime\": \"2022-12-28T05:09:46+00:00\",\n        \"ReadRefundAccount\": \"Yes\",\n        \"Initiation\": {\n            \"InstructionIdentification\": \"abc112\",\n            \"EndToEndIdentification\": \"def123\",\n            \"InstructedAmount\": {\n                \"Amount\": \"55.60\",\n                \"Currency\": \"ZAR\"\n            },\n            \"CreditorAccount\": {\n                \"SchemeName\": \"SortCodeAccountNumber\",\n                \"Identification\": \"1987651009427726\",\n                \"Name\": \"ACME Inc\",\n                \"SecondaryIdentification\": \"1009427726\"\n            },\n            \"RemittanceInformation\": {\n                \"Reference\": \"ba5a937d\",\n                \"Unstructured\": \"Instant EFT - Test\"\n            }\n        }\n    },\n    \"Risk\": {\n        \"PaymentContextCode\": \"EcommerceMerchantInitiatedPayment\",\n        \"MerchantCustomerIdentification\": \"1234567891\",\n        \"ContractPresentInidicator\": false,\n        \"BeneficiaryPrepopulatedIndicator\": false,\n        \"PaymentPurposeCode\": \"EPAY\",\n        \"BeneficiaryAccountType\": \"Business\",\n        \"DeliveryAddress\": {\n            \"AddressLine\": [\n                \"25 Queen Victoria Street\",\n                \"Acacia Lodge\"\n            ],\n            \"StreetName\": \"Kromdraai Road\",\n            \"BuildingNumber\": \"25\",\n            \"PostCode\": \"7872\",\n            \"TownName\": \"Hout Bay\",\n            \"CountrySubDivision\": \"Gauteng\",\n            \"Country\": \"ZA\"\n        }\n    },\n    \"Links\": {\n        \"Self\": \"https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payment-consents/01HCY05JA2ENJQ2GQXQH0NSG5S\",\n        \"SCARedirectURL\": \"https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/authorize?response_type=code&scope=openid%2Cpayments&redirect_uri=https%3A%2F%2Fgoogle.com&client_id=100abe8e-9eb0-4efe-93ac-e8976e0b47bf&intentid=01HCY05JA2ENJQ2GQXQH0NSG5S&itype=payments&state=abc112\"\n    },\n    \"Meta\": {}\n}  "
+				}
+			]
+		},
+		{
+			"name": "3 Create Authorisation URL",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://api-market.nedbank.co.za/apim02/sandbox/authserver/authurl?response_type=code&scope=openid,payments&redirect_uri=<REDIRECT URI>&client_id=<YOUR CLIENT ID>&intentid={{payment_id}}&itype=payments&state=<YOUR UNIQUE IDENTIFIER>",
+					"protocol": "https",
+					"host": [
+						"api-market",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apim02",
+						"sandbox",
+						"authserver",
+						"authurl"
+					],
+					"query": [
+						{
+							"key": "response_type",
+							"value": "code",
+							"description": "The type of data the endpoint will respond with."
+						},
+						{
+							"key": "scope",
+							"value": "openid,payments",
+							"description": "The type of the scope of the call"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "<REDIRECT URI>",
+							"description": "URI that the authorization must redirect the request to after completion."
+						},
+						{
+							"key": "client_id",
+							"value": "<YOUR CLIENT ID>",
+							"description": "Your client id, received when you registered your app on the developer portal"
+						},
+						{
+							"key": "intentid",
+							"value": "{{payment_id}}",
+							"description": "The Consent ID you received from the previous call."
+						},
+						{
+							"key": "itype",
+							"value": "payments",
+							"description": "This is the type of intent"
+						},
+						{
+							"key": "state",
+							"value": "<YOUR UNIQUE IDENTIFIER>",
+							"description": "Any value that you can use to uniquely identify the request when it comes back to your redirect uri."
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api-market.nedbank.co.za/apim02/sandbox/authserver/authurl?response_type=code&scope=openid,payments&redirect_uri=<REDIRECT URI>&client_id=<YOUR CLIENT ID>&intentid={{payment_id}}&itype=payments&state=payments",
+							"protocol": "https",
+							"host": [
+								"api-market",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apim02",
+								"sandbox",
+								"authserver",
+								"authurl"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code",
+									"description": "The type of data the endpoint will respond with."
+								},
+								{
+									"key": "scope",
+									"value": "openid,payments",
+									"description": "The type of the scope of the call"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "<REDIRECT URI>",
+									"description": "URI that the authorization must redirect the request to after completion."
+								},
+								{
+									"key": "client_id",
+									"value": "<YOUR CLIENT ID>",
+									"description": "Your client id, received when you registered your app on the developer portal"
+								},
+								{
+									"key": "intentid",
+									"value": "{{payment_id}}",
+									"description": "The Consent ID you received from the previous call."
+								},
+								{
+									"key": "itype",
+									"value": "payments",
+									"description": "This is the type of intent"
+								},
+								{
+									"key": "state",
+									"value": "payments",
+									"description": "Any value that you can use to uniquely identify the request when it comes back to your redirect uri."
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": "{\r\n    \"description\": \"Note this is a helper service to generate an authorisation URL.  For Development use only.\",\r\n    \"url\": \"https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/authorize?client_id=500aae8e-5fb0-4dde-93db-e2576e0b47af&intentid=bdb3effa-8ded-4411-8470-44ee361702bb&redirect_uri=https://google.com&scope=openid,payments&itype=payments&state=payments&response_type=code\"\r\n}"
+				}
+			]
+		},
+		{
+			"name": "4 Request token (heavy)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//access_token\r",
+							"var JSONData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"heavy_token\", JSONData.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"description": "The data type the endpoint will accept."
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text",
+						"description": "The data type being sent to the endpoint."
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "<YOUR CLIENT ID>",
+							"description": "The client id you received when creating the app in the portal.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "<YOUR CLIENT SECRET>",
+							"description": "The client secret you received when creating the app in the portal.",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "<REDIRECT URI>",
+							"description": "Replace with the redirect uri you used in the previous call.",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "<CODE>",
+							"description": "Replace with the code you received from the previous call.",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"description": "The grant type to be used",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/token",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"sandbox",
+						"nboauth",
+						"oauth20",
+						"token"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"description": "The data type the endpoint will accept."
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text",
+								"description": "The data type being sent to the endpoint."
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "<YOUR CLIENT ID>",
+									"description": "The client id you received when creating the app in the portal.",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "<YOUR CLIENT SECRET>",
+									"description": "The client secret you received when creating the app in the portal.",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "<REDIRECT URI>",
+									"description": "Replace with the redirect uri you used in the previous call.",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "Al7gaWkNOo9yeU0BG5XbUiPHLERl19",
+									"description": "Replace with the code you received from the previous call.",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"description": "The grant type to be used",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/token",
+							"protocol": "https",
+							"host": [
+								"api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"sandbox",
+								"nboauth",
+								"oauth20",
+								"token"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access_token\": \"v3xLCLDqusn63GGlCQCN\",\n    \"refresh_token\": \"1mcq6cAG8ADW8PQ6JjLZY6nrSb0BQRecol0J2A7G\",\n    \"scope\": \"openid payments\",\n    \"id_token\": \"eyJraWQiOiJicC00VmdDWUFhSTRicnZqS0FRb3NzY3U0WVpiWFdDczJsNF9xc0hVZjNvIiwiYWxnIjoiUlMyNTYifQ.eyJydF9oYXNoIjoiOWlybkhlS1Q3VjdWNDBtcFBfV202dyIsImlhdCI6MTYzNTMzODg2MCwiaXNzIjoiaHR0cHM6Ly9uZWRiYW5rLmNvLnphIiwiYXRfaGFzaCI6IkJXaDF4bHdSeGE4YjJVOUJhNXoyV1EiLCJzdWIiOiIzNzE2Mzc2NjQzIiwiZXhwIjoxNjM1MzQyNDYwLCJhdWQiOiI1MDBhYWU4ZS01ZmIwLTRkZGUtOTNkYi1lMjU3NmUwYjQ3YWYifQ.wG8DMox3rcMEZxZBw7nH-eSM72n2fFAUzALSA1L3dVil5_1hLAtPxFu1T-50OClyDsX2M-kPKtmqFn_Bs75Wet2UBip7c4s8nCIxugymvga3u5WROBe5AB9O63RiebC6x64t-SiX9bPZtoBY9C0SnBVriI9k3f_mfE-qZVItsxnS_vNrkf5Ip8b_UwWZayPX9pfuo6_S9K8CGB8lncfJZcTThnFaVW8jCaRaIX1IqaIUAE7fl-6ueYqvpFt11XtiGvpuGZxc7zzrv1pS6bfP9asn3Pw17MULplgU0CPlgCin66AWLrtm71U19AqWCrs66pgiD-wuYvCdRuQ1hwEw3w\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3599\n}"
+				}
+			]
+		},
+		{
+			"name": "5 Funds Confirmation",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-fapi-financial-id",
+						"value": "OB/2017/001",
+						"type": "text",
+						"description": "Financial ID."
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"description": "The data type the endpoint will accept"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{heavy_token}}",
+						"type": "text",
+						"description": "Replace with the heavy/submission access token you received from the previous call."
+					},
+					{
+						"key": "x-ibm-client-id",
+						"value": "<YOUR CLIENT ID>",
+						"type": "text",
+						"description": "The client ID you received when creating the app on the portal."
+					},
+					{
+						"key": "x-ibm-client-secret",
+						"value": "<YOUR CLIENT SECRET>",
+						"type": "text",
+						"description": "The client secret you received when creating the app on the portal."
+					}
+				],
+				"url": {
+					"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payment-consents/{{payment_id}}/funds-confirmation",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"sandbox",
+						"open-banking",
+						"v3.1",
+						"pisp",
+						"domestic-payment-consents",
+						"{{payment_id}}",
+						"funds-confirmation"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-fapi-financial-id",
+								"value": "OB/2017/001",
+								"type": "text",
+								"description": "Financial ID."
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"description": "content type"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{heavy_token}}",
+								"type": "text",
+								"description": "Replace with the heavy/submission access token you received from the previous call."
+							},
+							{
+								"key": "x-ibm-client-id",
+								"value": "<YOUR CLIENT ID>",
+								"type": "text",
+								"description": "The client ID you received when creating the app on the portal."
+							},
+							{
+								"key": "x-ibm-client-secret",
+								"value": "<YOUR CLIENT SECRET>",
+								"type": "text",
+								"description": "The client secret you received when creating the app on the portal."
+							}
+						],
+						"url": {
+							"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payment-consents/{{payment_id}}/funds-confirmation",
+							"protocol": "https",
+							"host": [
+								"api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"sandbox",
+								"open-banking",
+								"v3.1",
+								"pisp",
+								"domestic-payment-consents",
+								"{{payment_id}}",
+								"funds-confirmation"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Data\": {\n        \"DebtorAccount\": {\n            \"SchemeName\": \"Profile\",\n            \"Identification\": \"fc4c7158f5437b2d6e92ec241d69e10b\",\n            \"Name\": \"\",\n            \"SecondaryIdentification\": \"\"\n        },\n        \"FundsAvailableResult\": {\n            \"FundsAvailableDateTime\": \"2021-10-27T12:50:39+00:00\",\n            \"FundsAvailable\": true\n        }\n    },\n    \"Links\": {\n        \"Self\": \"https://api.nedbank.com/open-banking/v3.1/pisp/domestic-payment-consents/bdb3effa-8ded-4411-8470-44ee361702bb/funds-confirmation\"\n    },\n    \"Meta\": {}\n}"
+				}
+			]
+		},
+		{
+			"name": "6 Submit payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var JSONData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"domestic_paymentid\", JSONData.Data.DomesticPaymentId);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"description": "The data type the endpoint will accept"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"description": "The content type of the data being sent"
+					},
+					{
+						"key": "x-fapi-financial-id",
+						"value": "OB/2017/001",
+						"type": "text",
+						"description": "Financial ID."
+					},
+					{
+						"key": "x-idempotency-key",
+						"value": "<RANDOM INTEGER>",
+						"type": "text",
+						"description": "Random integer. It must be unique for every call"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{heavy_token}}",
+						"type": "text",
+						"description": "Replace with the heavy/submission access token you received from the previous call"
+					},
+					{
+						"key": "x-ibm-client-id",
+						"value": "<YOUR CLIENT ID>",
+						"type": "text",
+						"description": "The client ID you received when creating the app on the portal."
+					},
+					{
+						"key": "x-ibm-client-secret",
+						"value": "<YOUR CLIENT SECRET>",
+						"type": "text",
+						"description": "The client secret you received when creating the app on the portal."
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Data\": {\r\n        \"ConsentId\": \"01HCY05JA2ENJQ2GQXQH0NSG5H\",\r\n        \"Initiation\": {\r\n            \"InstructionIdentification\": \"abc112\",\r\n            \"EndToEndIdentification\": \"def123\",\r\n            \"InstructedAmount\": {\r\n                \"Amount\": \"55.60\",\r\n                \"Currency\": \"ZAR\"\r\n            },\r\n            \"CreditorAccount\": {\r\n                \"SchemeName\": \"SortCodeAccountNumber\",\r\n                \"Identification\": \"1987651009427726\",\r\n                \"Name\": \"ACME Inc\",\r\n                \"SecondaryIdentification\": \"1009427726\"\r\n            },\r\n            \"RemittanceInformation\": {\r\n                \"Reference\": \"FRESCO-101\",\r\n                \"Unstructured\": \"Maintenance Fee\"\r\n            }\r\n        }\r\n    },\r\n    \"Risk\": {\r\n        \"PaymentContextCode\": \"EcommerceMerchantInitiatedPayment\",\r\n        \"MerchantCustomerIdentification\": \"1234567891\",\r\n        \"ContractPresentInidicator\": false,\r\n        \"BeneficiaryPrepopulatedIndicator\": false,\r\n        \"PaymentPurposeCode\": \"EPAY\",\r\n        \"BeneficiaryAccountType\": \"Business\",\r\n        \"DeliveryAddress\": {\r\n            \"AddressLine\": [\r\n                \"25 Queen Victoria Street\",\r\n                \"Acacia Lodge\"\r\n            ],\r\n            \"StreetName\": \"Kromdraai Road\",\r\n            \"BuildingNumber\": \"25\",\r\n            \"PostCode\": \"7872\",\r\n            \"TownName\": \"Hout Bay\",\r\n            \"CountrySubDivision\": \"Gauteng\",\r\n            \"Country\": \"ZA\"\r\n        }\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payments",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"sandbox",
+						"open-banking",
+						"v3.1",
+						"pisp",
+						"domestic-payments"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"description": "content type"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"description": "The content type of the data being sent",
+								"type": "text"
+							},
+							{
+								"key": "x-fapi-financial-id",
+								"value": "OB/2017/001",
+								"type": "text",
+								"description": "Financial ID."
+							},
+							{
+								"key": "x-idempotency-key",
+								"value": "<RANDOM INTEGER>",
+								"type": "text",
+								"description": "Random integer. It must be unique for every call"
+							},
+							{
+								"key": "x-jws-signature",
+								"value": "<RANDOM INTEGER>",
+								"type": "text",
+								"description": "Random integer. It must be unique for every call"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{heavy_token}}",
+								"type": "text",
+								"description": "Replace with the heavy/submission access token you received from the previous call"
+							},
+							{
+								"key": "x-ibm-client-id",
+								"value": "<YOUR CLIENT ID>",
+								"type": "text",
+								"description": "The client ID you received when creating the app on the portal."
+							},
+							{
+								"key": "x-ibm-client-secret",
+								"value": "<YOUR CLIENT SECRET>",
+								"type": "text",
+								"description": "The client secret you received when creating the app on the portal."
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Data\": {\r\n        \"ConsentId\": \"01HCY05JA2ENJQ2GQXQH0NSG5H\",\r\n        \"Initiation\": {\r\n            \"InstructionIdentification\": \"abc112\",\r\n            \"EndToEndIdentification\": \"def123\",\r\n            \"InstructedAmount\": {\r\n                \"Amount\": \"55.60\",\r\n                \"Currency\": \"ZAR\"\r\n            },\r\n            \"CreditorAccount\": {\r\n                \"SchemeName\": \"SortCodeAccountNumber\",\r\n                \"Identification\": \"1987651009427726\",\r\n                \"Name\": \"ACME Inc\",\r\n                \"SecondaryIdentification\": \"1009427726\"\r\n            },\r\n            \"RemittanceInformation\": {\r\n                \"Reference\": \"FRESCO-101\",\r\n                \"Unstructured\": \"Maintenance Fee\"\r\n            }\r\n        }\r\n    },\r\n    \"Risk\": {\r\n        \"PaymentContextCode\": \"EcommerceMerchantInitiatedPayment\",\r\n        \"MerchantCustomerIdentification\": \"1234567891\",\r\n        \"ContractPresentInidicator\": false,\r\n        \"BeneficiaryPrepopulatedIndicator\": false,\r\n        \"PaymentPurposeCode\": \"EPAY\",\r\n        \"BeneficiaryAccountType\": \"Business\",\r\n        \"DeliveryAddress\": {\r\n            \"AddressLine\": [\r\n                \"25 Queen Victoria Street\",\r\n                \"Acacia Lodge\"\r\n            ],\r\n            \"StreetName\": \"Kromdraai Road\",\r\n            \"BuildingNumber\": \"25\",\r\n            \"PostCode\": \"7872\",\r\n            \"TownName\": \"Hout Bay\",\r\n            \"CountrySubDivision\": \"Gauteng\",\r\n            \"Country\": \"ZA\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"sandbox",
+								"open-banking",
+								"v3.1",
+								"pisp",
+								"domestic-payments"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Data\": {\n        \"DomesticPaymentId\": \"26381573\",\n        \"ConsentId\": \"01HCY05JA2ENJQ2GQXQH0NSG5H\",\n        \"Status\": \"AcceptedSettlementCompleted\",\n        \"CreationDateTime\": \"2022-12-28T05:09:46+00:00\",\n        \"StatusUpdateDateTime\": \"2022-12-28T05:14:59+00:00\",\n        \"Refund\": {\n            \"Account\": {\n                \"Identification\": \"1987651009427721\",\n                \"Name\": \"Ronaldo Carlos\",\n                \"SchemeName\": \"SortCodeAccountNumber\",\n                \"SecondaryIdentification\": \"1009427721\"\n            }\n        },\n        \"Initiation\": {\n            \"InstructionIdentification\": \"abc112\",\n            \"EndToEndIdentification\": \"def123\",\n            \"InstructedAmount\": {\n                \"Amount\": \"55.60\",\n                \"Currency\": \"ZAR\"\n            },\n            \"DebtorAccount\": {\n                \"SchemeName\": \"Profile\",\n                \"Identification\": \"d16a3c533d71f49ae628bf7cf7993c1b\"\n            },\n            \"CreditorAccount\": {\n                \"SchemeName\": \"SortCodeAccountNumber\",\n                \"Identification\": \"1987651009427726\",\n                \"Name\": \"ACME Inc\",\n                \"SecondaryIdentification\": \"1009427726\"\n            },\n            \"RemittanceInformation\": {\n                \"Reference\": \"FRESCO-101\",\n                \"Unstructured\": \"Maintenance Fee\"\n            }\n        }\n    },\n    \"Links\": {\n        \"Self\": \"https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payments/26381573\"\n    },\n    \"Meta\": {}\n}"
+				}
+			]
+		},
+		{
+			"name": "7 Payment submission status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"description": "The data type the endpoint will accept"
+					},
+					{
+						"key": "x-fapi-financial-id",
+						"value": "OB/2017/001",
+						"type": "text",
+						"description": "Financial ID."
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{light_token}}",
+						"type": "text",
+						"description": "The intent access token (light token). Replace <ACCESS_TOKEN> with the token you received."
+					},
+					{
+						"key": "x-ibm-client-id",
+						"value": "<YOUR CLIENT ID>",
+						"type": "text",
+						"description": "The client ID you received when creating the app on the portal."
+					},
+					{
+						"key": "x-ibm-client-secret",
+						"value": "<YOUR CLIENT SECRET>",
+						"type": "text",
+						"description": "The client secret you received when creating the app on the portal."
+					}
+				],
+				"url": {
+					"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payments/{{domestic_paymentid}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"sandbox",
+						"open-banking",
+						"v3.1",
+						"pisp",
+						"domestic-payments",
+						"{{domestic_paymentid}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"description": "content type"
+							},
+							{
+								"key": "x-fapi-financial-id",
+								"value": "OB/2017/001",
+								"type": "text",
+								"description": "Financial ID."
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{light_token}}",
+								"type": "text",
+								"description": "The intent access token (light token). Replace <ACCESS_TOKEN> with the token you received."
+							},
+							{
+								"key": "x-ibm-client-id",
+								"value": "<YOUR CLIENT ID>",
+								"type": "text",
+								"description": "The client ID you received when creating the app on the portal."
+							},
+							{
+								"key": "x-ibm-client-secret",
+								"value": "<YOUR CLIENT SECRET>",
+								"type": "text",
+								"description": "The client secret you received when creating the app on the portal."
+							}
+						],
+						"url": {
+							"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payments/{{domestic_paymentId}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"sandbox",
+								"open-banking",
+								"v3.1",
+								"pisp",
+								"domestic-payments",
+								"{{domestic_paymentId}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\r\n    \"Data\": {\r\n        \"DomesticPaymentId\": \"26381573\",\r\n        \"ConsentId\": \"01HCY05JA2ENJQ2GQXQH0NSG5H\",\r\n        \"Status\": \"AcceptedSettlementCompleted\",\r\n        \"CreationDateTime\": \"2022-12-28T05:09:46+00:00\",\r\n        \"StatusUpdateDateTime\": \"2022-12-28T05:14:59+00:00\",\r\n        \"Initiation\": {\r\n            \"InstructionIdentification\": \"abc112\",\r\n            \"EndToEndIdentification\": \"def123\",\r\n            \"InstructedAmount\": {\r\n                \"Amount\": \"55.60\",\r\n                \"Currency\": \"ZAR\"\r\n            },\r\n            \"DebtorAccount\": {\r\n                \"SchemeName\": \"Profile\",\r\n                \"Identification\": \"d16a3c533d71f49ae628bf7cf7993c1b\"\r\n            },\r\n            \"CreditorAccount\": {\r\n                \"SchemeName\": \"SortCodeAccountNumber\",\r\n                \"Identification\": \"1987651009427726\",\r\n                \"Name\": \"ACME Inc\",\r\n                \"SecondaryIdentification\": \"1009427726\"\r\n            },\r\n            \"RemittanceInformation\": {\r\n                \"Reference\": \"FRESCO-101\",\r\n                \"Unstructured\": \"Maintenance Fee\"\r\n            }\r\n        }\r\n    },\r\n    \"Links\": {\r\n        \"Self\": \"https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payments/26381573\"\r\n    },\r\n    \"Meta\": {\r\n        \"CustomerProfile\": \"706ec441-567a-4957-a451-a075081faa89\"\r\n    }"
+				}
+			]
+		},
+		{
+			"name": "8 Get Intent Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"description": "The data type the endpoint will accept"
+					},
+					{
+						"key": "x-fapi-financial-id",
+						"value": "OB/2017/001",
+						"type": "text",
+						"description": "Financial ID."
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{light_token}}",
+						"type": "text",
+						"description": "The intent access token (light token). Replace <ACCESS_TOKEN> with the token you received."
+					},
+					{
+						"key": "x-ibm-client-id",
+						"value": "<YOUR CLIENT ID>",
+						"type": "text",
+						"description": "The client ID you received when creating the app on the portal."
+					},
+					{
+						"key": "x-ibm-client-secret",
+						"value": "<YOUR CLIENT SECRET>",
+						"type": "text",
+						"description": "The client secret you received when creating the app on the portal."
+					}
+				],
+				"url": {
+					"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payment-consents/{{consent_id}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"sandbox",
+						"open-banking",
+						"v3.1",
+						"pisp",
+						"domestic-payment-consents",
+						"{{consent_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"description": "content type"
+							},
+							{
+								"key": "x-fapi-financial-id",
+								"value": "OB/2017/001",
+								"type": "text",
+								"description": "Financial ID."
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{light_token}}",
+								"type": "text",
+								"description": "The intent access token (light token). Replace <ACCESS_TOKEN> with the token you received."
+							},
+							{
+								"key": "x-ibm-client-id",
+								"value": "<YOUR CLIENT ID>",
+								"type": "text",
+								"description": "The client ID you received when creating the app on the portal."
+							},
+							{
+								"key": "x-ibm-client-secret",
+								"value": "<YOUR CLIENT SECRET>",
+								"type": "text",
+								"description": "The client secret you received when creating the app on the portal."
+							}
+						],
+						"url": {
+							"raw": "https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payment-consents/{{consent_id}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"sandbox",
+								"open-banking",
+								"v3.1",
+								"pisp",
+								"domestic-payment-consents",
+								"{{consent_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\r\n    \"Data\": {\r\n        \"ConsentId\": \"01HCY05JA2ENJQ2GQXQH0NSG5H\",\r\n        \"Status\": \"AcceptedSettlementCompleted\",\r\n        \"CreationDateTime\": \"2022-12-28T05:09:46+00:00\",\r\n        \"StatusUpdateDateTime\": \"2022-12-28T05:09:46+00:00\",\r\n        \"ReadRefundAccount\": \"Yes\",\r\n        \"Initiation\": {\r\n            \"InstructionIdentification\": \"abc112\",\r\n            \"EndToEndIdentification\": \"def123\",\r\n            \"InstructedAmount\": {\r\n                \"Amount\": \"55.60\",\r\n                \"Currency\": \"ZAR\"\r\n            },\r\n            \"DebtorAccount\": {\r\n                \"SchemeName\": \"Profile\",\r\n                \"Identification\": \"d16a3c533d71f49ae628bf7cf7993c1b\"\r\n            },\r\n            \"CreditorAccount\": {\r\n                \"SchemeName\": \"SortCodeAccountNumber\",\r\n                \"Identification\": \"1987651009427726\",\r\n                \"Name\": \"ACME Inc\",\r\n                \"SecondaryIdentification\": \"1009427726\"\r\n            },\r\n            \"RemittanceInformation\": {\r\n                \"Reference\": \"FRESCO-101\",\r\n                \"Unstructured\": \"Maintenance Fee\"\r\n            }\r\n        }\r\n    },\r\n    \"Risk\": {\r\n        \"PaymentContextCode\": \"EcommerceMerchantInitiatedPayment\",\r\n        \"PaymentPurposeCode\": \"EPAY\",\r\n        \"MerchantCustomerIdentification\": \"1234567891\",\r\n        \"ContractPresentInidicator\": false,\r\n        \"BeneficiaryPrepopulatedIndicator\": false,\r\n        \"BeneficiaryAccountType\": \"Business\",\r\n        \"DeliveryAddress\": {\r\n            \"AddressLine\": [\r\n                \"25 Queen Victoria Street\",\r\n                \"Acacia Lodge\"\r\n            ],\r\n            \"StreetName\": \"Kromdraai Road\",\r\n            \"BuildingNumber\": \"25\",\r\n            \"PostCode\": \"7872\",\r\n            \"TownName\": \"Hout Bay\",\r\n            \"CountrySubDivision\": \"Gauteng\",\r\n            \"Country\": \"ZA\"\r\n        }\r\n    },\r\n    \"Links\": {\r\n      {\r\n    \"Data\": {\r\n        \"ConsentId\": \"01HCY05JA2ENJQ2GQXQH0NSG5S\",\r\n        \"Status\": \"AwaitingAuthorisation\",\r\n        \"CreationDateTime\": \"2022-12-28T05:09:46+00:00\",\r\n        \"StatusUpdateDateTime\": \"2022-12-28T05:09:46+00:00\",\r\n        \"ReadRefundAccount\": \"Yes\",\r\n        \"Initiation\": {\r\n            \"InstructionIdentification\": \"abc112\",\r\n            \"EndToEndIdentification\": \"def123\",\r\n            \"InstructedAmount\": {\r\n                \"Amount\": \"55.60\",\r\n                \"Currency\": \"ZAR\"\r\n            },\r\n            \"CreditorAccount\": {\r\n                \"SchemeName\": \"SortCodeAccountNumber\",\r\n                \"Identification\": \"1987651009427726\",\r\n                \"Name\": \"ACME Inc\",\r\n                \"SecondaryIdentification\": \"1009427726\"\r\n            },\r\n            \"RemittanceInformation\": {\r\n                \"Reference\": \"ba5a937d\",\r\n                \"Unstructured\": \"Instant EFT - Test\"\r\n            }\r\n        }\r\n    },\r\n    \"Risk\": {\r\n        \"PaymentContextCode\": \"EcommerceMerchantInitiatedPayment\",\r\n        \"MerchantCustomerIdentification\": \"1234567891\",\r\n        \"ContractPresentInidicator\": false,\r\n        \"BeneficiaryPrepopulatedIndicator\": false,\r\n        \"PaymentPurposeCode\": \"EPAY\",\r\n        \"BeneficiaryAccountType\": \"Business\",\r\n        \"DeliveryAddress\": {\r\n            \"AddressLine\": [\r\n                \"25 Queen Victoria Street\",\r\n                \"Acacia Lodge\"\r\n            ],\r\n            \"StreetName\": \"Kromdraai Road\",\r\n            \"BuildingNumber\": \"25\",\r\n            \"PostCode\": \"7872\",\r\n            \"TownName\": \"Hout Bay\",\r\n            \"CountrySubDivision\": \"Gauteng\",\r\n            \"Country\": \"ZA\"\r\n        }\r\n    },\r\n    \"Links\": {\r\n        \"Self\": \"https://api.nedbank.co.za/apimarket/sandbox/open-banking/v3.1/pisp/domestic-payment-consents/01HCY05JA2ENJQ2GQXQH0NSG5S\",\r\n        \"SCARedirectURL\": \"https://api.nedbank.co.za/apimarket/sandbox/nboauth/oauth20/authorize?response_type=code&scope=openid%2Cpayments&redirect_uri=https%3A%2F%2Fgoogle.com&client_id=100abe8e-9eb0-4efe-93ac-e8976e0b47bf&intentid=01HCY05JA2ENJQ2GQXQH0NSG5S&itype=payments&state=abc112\"\r\n    },\r\n    \"Meta\": {}\r\n}  "
+				}
+			]
+		},
+		{
+			"name": "9 Initiate Refund",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var JSONData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"Id\", JSONData.Data.ID);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"description": "The content type of the data being sent"
+					},
+					{
+						"key": "x-idempotency-key",
+						"value": "<RANDOM INTEGER>",
+						"type": "text",
+						"description": "Random integer. It must be unique for every call"
+					},
+					{
+						"key": "x-ibm-client-id",
+						"value": "<YOUR CLIENT ID>",
+						"type": "text",
+						"description": "The client ID you received when creating the app on the portal."
+					},
+					{
+						"key": "x-ibm-client-secret",
+						"value": "<YOUR CLIENT SECRET>",
+						"type": "text",
+						"description": "The client secret you received when creating the app on the portal."
+					},
+					{
+						"key": "x-fapi-financial-id",
+						"value": "OB/2017/001",
+						"description": "Financial ID.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Data\": {\r\n        \"PaymentID\": \"26381573\",\r\n        \"RefundIdentifiers\": {\r\n            \"EndToEndID\": \"00016899308543731\",\r\n            \"InstructionIdentification\": \"1320134c-56af-4ac1-8c2a-68aa2af67\"\r\n        },\r\n        \"InterBankSettlementAmount\": {\r\n            \"Amount\": \"1.00\",\r\n            \"Currency\": \"ZAR\"\r\n        },\r\n        \"RemittanceInformation\": {\r\n            \"Unstructured\": \"abc refund\",\r\n            \"CreditorReferenceInfoReference\": \"abc refund\"\r\n        }\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "https://b2b-api.nedbank.co.za/apimarket/b2b-sb/payments/v1/refunds/initiate-refund",
+					"protocol": "https",
+					"host": [
+						"b2b-api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"b2b-sb",
+						"payments",
+						"v1",
+						"refunds",
+						"initiate-refund"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"description": "content type"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"description": "The content type of the data being sent",
+								"type": "text"
+							},
+							{
+								"key": "x-idempotency-key",
+								"value": "<RANDOM INTEGER>",
+								"type": "text",
+								"description": "Random integer. It must be unique for every call"
+							},
+							{
+								"key": "x-ibm-client-id",
+								"value": "<YOUR CLIENT ID>",
+								"type": "text",
+								"description": "The client ID you received when creating the app on the portal."
+							},
+							{
+								"key": "x-ibm-client-secret",
+								"value": "<YOUR CLIENT SECRET>",
+								"type": "text",
+								"description": "The client secret you received when creating the app on the portal."
+							},
+							{
+								"key": "x-fapi-financial-id",
+								"value": "OB/2017/001",
+								"description": "Financial ID.",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Data\": {\r\n        \"PaymentID\": \"26381573\",\r\n        \"RefundIdentifiers\": {\r\n            \"EndToEndID\": \"00016899308543731\",\r\n            \"InstructionIdentification\": \"1320134c-56af-4ac1-8c2a-68aa2af67\"\r\n        },\r\n        \"InterBankSettlementAmount\": {\r\n            \"Amount\": \"1.00\",\r\n            \"Currency\": \"ZAR\"\r\n        },\r\n        \"RemittanceInformation\": {\r\n            \"Unstructured\": \"abc refund\",\r\n            \"CreditorReferenceInfoReference\": \"abc refund\"\r\n        }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://b2b-api.nedbank.co.za/apimarket/b2b-sb/payments/v1/refunds/initiate-refund",
+							"protocol": "https",
+							"host": [
+								"b2b-api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"b2b-sb",
+								"payments",
+								"v1",
+								"refunds",
+								"initiate-refund"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"Data\": {\n    \"ID\": \"01HEW1GFDSBEN956Z9RHTF4FY3\",\n    \"PaymentID\": \"26381573\",\n    \"RequestedDateTime\": \"2023-11-10T07:21:46.199Z\",\n    \"RefundStatus\": \"Pending\",\n    \"RefundDetails\": {\n      \"DebtorAccount\": {\n        \"SchemeName\": \"SortCodeAccountNumber\",\n        \"Identification\": \"1987651234567890\",\n        \"Name\": \"ACME Inc\"\n      },\n      \"InterBankSettlementAmount\": \"1.00\",\n      \"Currency\": \"ZAR\",\n      \"RefundIdentifiers\": {\n        \"EndToEndID\": \"00016899308543731\",\n        \"InstructionIdentification\": \"1320134c-56af-4ac1-8c2a-68aa2af67\"\n      }\n    }\n  },\n  \"Links\": {\n    \"Self\": \"https://b2b-api.nedbank.co.za/apimarket/b2b-sb/payments/v1/refunds/01HEW1GFDSBEN956Z9RHTF4FY3\"\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "10 Get Refund Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-ibm-client-id",
+						"value": "<YOUR CLIENT ID>",
+						"type": "text",
+						"description": "The client ID you received when creating the app on the portal."
+					},
+					{
+						"key": "x-ibm-client-secret",
+						"value": "<YOUR CLIENT SECRET>",
+						"type": "text",
+						"description": "The client secret you received when creating the app on the portal."
+					}
+				],
+				"url": {
+					"raw": "https://b2b-api.nedbank.co.za/apimarket/b2b-sb/payments/v1/refunds/{{Id}}",
+					"protocol": "https",
+					"host": [
+						"b2b-api",
+						"nedbank",
+						"co",
+						"za"
+					],
+					"path": [
+						"apimarket",
+						"b2b-sb",
+						"payments",
+						"v1",
+						"refunds",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Sample Response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-ibm-client-id",
+								"value": "<YOUR CLIENT ID>",
+								"type": "text",
+								"description": "The client ID you received when creating the app on the portal."
+							},
+							{
+								"key": "x-ibm-client-secret",
+								"value": "<YOUR CLIENT SECRET>",
+								"type": "text",
+								"description": "The client secret you received when creating the app on the portal."
+							}
+						],
+						"url": {
+							"raw": "https://b2b-api.nedbank.co.za/apimarket/b2b-sb/payments/v1/refunds/{{Id}}",
+							"protocol": "https",
+							"host": [
+								"b2b-api",
+								"nedbank",
+								"co",
+								"za"
+							],
+							"path": [
+								"apimarket",
+								"b2b-sb",
+								"payments",
+								"v1",
+								"refunds",
+								"{{Id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\r\n    \"Data\": {\r\n        \"ID\": \"01HEW1GFDSBEN956Z9RHTF4FY3\",\r\n        \"PaymentID\": \"26381573\",\r\n        \"RequestedDateTime\": \"2023-11-10T07:21:46.199Z\",\r\n        \"RefundStatus\": \"AcceptedSettlementInProcess\",\r\n        \"RefundDetails\": {\r\n            \"DebtorAccount\": {\r\n                \"SchemeName\": \"SortCodeAccountNumber\",\r\n                \"Identification\": \"1987651234567890\",\r\n                \"Name\": \"ACME Inc\"\r\n            },\r\n            \"InterBankSettlementAmount\": \"1.00\",\r\n            \"Currency\": \"ZAR\",\r\n            \"RefundIdentifiers\": {\r\n                \"EndToEndID\": \"00016899308543731\",\r\n                \"InstructionIdentification\": \"1320134c-56af-4ac1-8c2a-68aa2af67\"\r\n            }\r\n        }\r\n    },\r\n    \"Links\": {\r\n        \"Self\": \"https://b2b-api.nedbank.co.za/apimarket/b2b-sb/payments/v1/refunds/01HEW1GFDSBEN956Z9RHTF4FY3\"\r\n    }\r\n}   "
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "light_token",
+			"value": ""
+		},
+		{
+			"key": "payment_id",
+			"value": ""
+		},
+		{
+			"key": "heavy_token",
+			"value": ""
+		},
+		{
+			"key": "domestic_paymentid",
+			"value": ""
+		},
+		{
+			"key": "consent_id",
+			"value": ""
+		},
+		{
+			"key": "instruction_identification",
+			"value": ""
+		},
+		{
+			"key": "endtoend_identification",
+			"value": ""
+		}
+	]
+}
