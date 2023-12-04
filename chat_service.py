@@ -22,8 +22,11 @@ class ChatService:
         thread_id = self._assistant_manager.create_thread()
         return thread_id
 
-    async def handle_chat(self, assistant_name: str, thread_id: str, user_input: str):
+    async def handle_chat(self, assistant_name: str, thread_id: str, user_input: str, file: UploadFile = None):
         assistant_id = self._assistant_manager.get_assistant_id_by_name(assistant_name)
+        if file:
+            # Here you can add logic to handle the file, e.g., save it or process it.
+            pass  # Placeholder for file handling logic
         run_id = self._assistant_manager.send_message(thread_id, assistant_id, user_input)
         return run_id
 

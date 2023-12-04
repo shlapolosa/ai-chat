@@ -58,20 +58,27 @@ async def check_run_status(thread_id: str, run_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+from fastapi import File, UploadFile
+
 @router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(
-    chat_request: ChatRequest
+    chat_request: ChatRequest,
+    file: UploadFile = File(None)
 ):
     """
-    POST method to handle a chat message. This endpoint accepts a ChatRequest object,
-    processes it using the ChatService, and returns the response.
+    POST method to handle a chat message and an optional file. This endpoint accepts a ChatRequest object
+    and an optional file, processes it using the ChatService, and returns the response.
     """
     logger.info(f"chat_endpoint: Received chat request with values={chat_request}")
+    if file:
+        # Here you can add logic to handle the file, e.g., save it or process it.
+        logger.info(f"Received file with filename: {file.filename}")
     try:
         run_id = await chat_service_instance.handle_chat(
             assistant_name=chat_request.assistant_name,
             thread_id=chat_request.thread_id,
-            user_input=chat_request.message
+            user_input=chat_request.message,
+            file=file  # Pass the optional file to the handle_chat method
         )
         response = ChatResponse(run_id=run_id)
         logger.info(f"chat_endpoint: Completed handling chat request with run_id={run_id}")
