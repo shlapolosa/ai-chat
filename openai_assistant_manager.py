@@ -12,6 +12,24 @@ import prompts
 # Configure logging
 logger = logging.getLogger(__name__)
 
+class OpenAIAssistantManager:
+    # Existing methods...
+
+    def upload_file(self, file: str, purpose: str = "assistants") -> str:
+        """
+        Uploads a file to OpenAI and returns the file ID.
+
+        Parameters:
+        file: The path to the file to be uploaded.
+        purpose: The purpose of the file upload, defaults to "assistants".
+
+        Returns:
+        The file ID from OpenAI after the upload.
+        """
+        with open(file, "rb") as file_data:
+            response = openai.File.create(file=file_data, purpose=purpose)
+        return response.id
+
 
 class OpenAIAssistantManager:
 #TODO: Socrates to split file into OpenAIAssistManager and APIRequestHandler files
