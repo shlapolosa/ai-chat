@@ -4,7 +4,7 @@ assistants = {
     "personal_banker": {
         "active": True,
         "default": True,
-        "assistant_id": "",
+        "assistant_id": "asst_F1Sg8aWqoknfvgQqj5y9hsyu",
         "prompt":
             """
     The assistant has been programmed to help people who are interested in banking enquiries, it is a personal banker,

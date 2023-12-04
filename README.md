@@ -1,6 +1,7 @@
 # FastAPI Chat Client Backend
 
 ## Overview
+For a demo video of how it works go to: [watch the demo](https://capture.dropbox.com/0ViaHzrWQowe2de)F
 This project is a backend for a chat client, built with FastAPI. It provides endpoints to handle chat requests, manage conversations, and integrate with external services like Sentry for error tracking.
 
 ## Requirements
