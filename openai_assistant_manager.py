@@ -172,12 +172,14 @@ class OpenAIAssistantManager:
             file_ids.append(file_id)
         # Include the file_ids in the message payload if any file was uploaded
         logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}, with file_ids={file_ids}")
-        self.client.beta.threads.messages.create(
-            thread_id=thread_id,
-            role="user",
-            content=message,
-            file_ids=file_ids if file_ids else None
-        )
+        message_creation_data = {
+            "thread_id": thread_id,
+            "role": "user",
+            "content": message
+        }
+        if file_ids:
+            message_creation_data["file_ids"] = file_ids
+        self.client.beta.threads.messages.create(**message_creation_data)
         run = self.client.beta.threads.runs.create(
             thread_id=thread_id,
             assistant_id=assistant_id
