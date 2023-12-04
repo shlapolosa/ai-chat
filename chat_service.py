@@ -25,10 +25,12 @@ class ChatService:
 
     async def handle_chat(self, assistant_name: str, thread_id: str, user_input: str, file: UploadFile = None):
         assistant_id = self._assistant_manager.get_assistant_id_by_name(assistant_name)
+        print(f"chat_service: in method{file.filename}")
         if file:
             # Here you can add logic to handle the file, e.g., save it or process it.
+            print(f"chat_service: found the file{file.filename}")
             pass  # Placeholder for file handling logic
-        run_id = self._assistant_manager.send_message(thread_id, assistant_id, user_input, file)
+        run_id = await self._assistant_manager.send_message(thread_id, assistant_id, user_input, file)
         return run_id
 
     async def check_run_status(self, thread_id: str, run_id: str):

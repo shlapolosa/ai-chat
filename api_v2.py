@@ -66,17 +66,28 @@ from fastapi import File, UploadFile
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(
-    chat_request: ChatRequest
+    file: UploadFile = File(...),
+    assistant_name: Optional[str] = Form(None),
+    thread_id: str = Form(...),
+    message: str = Form(...)
 ):
     """
     POST method to handle a chat message and an optional file. This endpoint accepts a ChatRequest object
     and an optional file, processes it using the ChatService, and returns the response.
     """
+    # file_content = await file.read()
+
+    chat_request = ChatRequest(
+        assistant_name=assistant_name,
+        thread_id=thread_id,
+        message=message
+    )
+ 
     logger.info(f"chat_endpoint: Received chat request with values={chat_request}")
-    file = None
+
     if file:
         # Here you can add logic to handle the file, e.g., save it or process it.
-        logger.info(f"Received file with filename: {file.filename}")
+        logger.info(f"Received file with filename: {file.filename} of size {file.size}")
     try:
         run_id = await chat_service_instance.handle_chat(
             assistant_name=chat_request.assistant_name,

@@ -2,6 +2,7 @@ import asyncio
 import inspect
 import json
 import logging
+from fastapi import UploadFile
 import openai
 import os
 from typing import Any, Dict, List, get_type_hints
@@ -29,7 +30,7 @@ class OpenAIAssistantManager:
             "api_version": self.api_version
         }
 
-    def upload_file(self, file: str, purpose: str = "assistants") -> str:
+    async def upload_file(self, file: UploadFile = None, purpose: str = "assistants") -> str:
         """
         Uploads a file to OpenAI and returns the file ID.
 
@@ -40,9 +41,28 @@ class OpenAIAssistantManager:
         Returns:
         The file ID from OpenAI after the upload.
         """
-        with open(file, "rb") as file_data:
-            response = openai.File.create(file=file_data, purpose=purpose)
-        return response.id
+        # with open(file, "rb") as file_data:
+        if file.filename:
+            try:
+                # Save the uploaded file temporarily
+                temp_file_path = f"temp_{file.filename}"
+                with open(temp_file_path, "wb") as temp_file:
+                    content = await file.read()
+                    temp_file.write(content)
+
+                # Upload the file using the client's file creation method
+                created_file = self.client.files.create(
+                    file=open(temp_file_path, "rb"),
+                    purpose='assistants'
+                )
+
+                # Remove the temporary file after uploading
+                os.remove(temp_file_path)
+                return created_file.id
+            except Exception as e:
+                logger.error(f"Error processing file: {str(e)}")
+
+        return None
     
 
     def update_assistant_id_in_prompts(self, assistant_name, assistant_id):
@@ -165,10 +185,10 @@ class OpenAIAssistantManager:
         thread = self.client.beta.threads.create()
         return thread.id
 
-    def send_message(self, thread_id, assistant_id, message, file=None):
+    async def send_message(self, thread_id, assistant_id, message, file: UploadFile = None):
         file_ids = []
         if file:
-            file_id = self.upload_file(file)
+            file_id = await self.upload_file(file)
             file_ids.append(file_id)
         # Include the file_ids in the message payload if any file was uploaded
         logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}, with file_ids={file_ids}")

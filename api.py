@@ -63,19 +63,15 @@ async def check_run_status(thread_id: str, run_id: str):
 from fastapi import File, UploadFile
 
 @router.post("/chat", response_model=ChatResponse)
-
-
-from models import ChatRequest
-
 async def chat_endpoint(
     chat_request: ChatRequest
 ):
-    chat_request = ChatRequest(thread_id=thread_id, message=message, assistant_name=assistant_name)
     """
     POST method to handle a chat message and an optional file. This endpoint accepts a ChatRequest object
     and an optional file, processes it using the ChatService, and returns the response.
     """
     logger.info(f"chat_endpoint: Received chat request with values={chat_request}")
+    file = None
     if file:
         # Here you can add logic to handle the file, e.g., save it or process it.
         logger.info(f"Received file with filename: {file.filename}")
