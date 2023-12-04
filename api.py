@@ -65,11 +65,10 @@ from fastapi import File, UploadFile
 @router.post("/chat", response_model=ChatResponse)
 
 
+from models import ChatRequest
+
 async def chat_endpoint(
-    thread_id: str = Form(...),
-    message: str = Form(...),
-    assistant_name: Optional[str] = Form(None),
-    file: UploadFile = Form(...)
+    chat_request: ChatRequest
 ):
     chat_request = ChatRequest(thread_id=thread_id, message=message, assistant_name=assistant_name)
     """
