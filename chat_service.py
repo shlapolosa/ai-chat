@@ -28,7 +28,7 @@ class ChatService:
         if file:
             # Here you can add logic to handle the file, e.g., save it or process it.
             pass  # Placeholder for file handling logic
-        run_id = self._assistant_manager.send_message(thread_id, assistant_id, user_input)
+        run_id = self._assistant_manager.send_message(thread_id, assistant_id, user_input, file)
         return run_id
 
     async def check_run_status(self, thread_id: str, run_id: str):
