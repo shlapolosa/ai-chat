@@ -65,10 +65,12 @@ from fastapi import File, UploadFile
 
 
 async def chat_endpoint(
-    chat_request: str = Form(...),
+    thread_id: str = Form(...),
+    message: str = Form(...),
+    assistant_name: Optional[str] = Form(None),
     file: UploadFile = Form(None)
 ):
-    chat_request = parse_obj_as(ChatRequest, json.loads(chat_request))
+    chat_request = ChatRequest(thread_id=thread_id, message=message, assistant_name=assistant_name)
     """
     POST method to handle a chat message and an optional file. This endpoint accepts a ChatRequest object
     and an optional file, processes it using the ChatService, and returns the response.
