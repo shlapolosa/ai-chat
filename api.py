@@ -61,10 +61,14 @@ async def check_run_status(thread_id: str, run_id: str):
 from fastapi import File, UploadFile
 
 @router.post("/chat", response_model=ChatResponse)
+from fastapi import Form
+from pydantic import parse_obj_as
+
 async def chat_endpoint(
-    chat_request: ChatRequest,
-    file: UploadFile = File(None)
+    chat_request: str = Form(...),
+    file: UploadFile = Form(None)
 ):
+    chat_request = parse_obj_as(ChatRequest, json.loads(chat_request))
     """
     POST method to handle a chat message and an optional file. This endpoint accepts a ChatRequest object
     and an optional file, processes it using the ChatService, and returns the response.
