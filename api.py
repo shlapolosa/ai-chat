@@ -1,5 +1,6 @@
 import fastapi
 from fastapi import APIRouter, Depends, Form, HTTPException, Body, Response
+from typing import Optional
 from pydantic import parse_obj_as
 from main import logger
 from chat_service import ChatService
