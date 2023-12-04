@@ -50,8 +50,11 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 # Add Sentry middleware
 app.add_middleware(SentryAsgiMiddleware)
 
+from api_v2 import router as api_v2_router
+
 # Include routers with a prefix
 app.include_router(api_router, prefix="/api")
+app.include_router(api_v2_router, prefix="/api/v2")
 
 # Application startup event
 @app.on_event("startup")

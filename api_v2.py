@@ -13,7 +13,7 @@ import re
 
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/v2")
+router = APIRouter()
 
 assistant_manager = OpenAIAssistantManager(settings.openai_api_key)
 logger.info("Assistants have been loaded.")
