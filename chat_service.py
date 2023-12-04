@@ -1,6 +1,7 @@
 import asyncio
 import time
 from typing import List
+from fastapi import UploadFile
 from openai_assistant_manager import OpenAIAssistantManager
 
 class ChatService:
