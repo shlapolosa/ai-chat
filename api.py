@@ -1,5 +1,6 @@
 import fastapi
-from fastapi import APIRouter, Depends, HTTPException, Body, Response
+from fastapi import APIRouter, Depends, Form, HTTPException, Body, Response
+from pydantic import parse_obj_as
 from main import logger
 from chat_service import ChatService
 from models import ChatRequest, ChatResponse
@@ -61,8 +62,7 @@ async def check_run_status(thread_id: str, run_id: str):
 from fastapi import File, UploadFile
 
 @router.post("/chat", response_model=ChatResponse)
-from fastapi import Form
-from pydantic import parse_obj_as
+
 
 async def chat_endpoint(
     chat_request: str = Form(...),
