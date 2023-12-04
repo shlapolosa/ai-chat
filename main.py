@@ -51,8 +51,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 app.add_middleware(SentryAsgiMiddleware)
 
 # Include routers with a prefix
-app.include_router(api_router, prefix="/api/v1")  # Existing API becomes version 1
-app.include_router(api_router, prefix="/api/v2")  # New API version 2
+app.include_router(api_router, prefix="/api")
 
 # Application startup event
 @app.on_event("startup")

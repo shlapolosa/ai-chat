@@ -126,3 +126,8 @@ def oauth_callback(code, state):
     #     'error': request.GET.get('error'),
     #     'error_description': request.GET.get('error_description'),
     # })
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/v2")
+
+# ... rest of your api_v2.py code ...
