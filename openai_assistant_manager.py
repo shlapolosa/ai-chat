@@ -165,7 +165,11 @@ class OpenAIAssistantManager:
         thread = self.client.beta.threads.create()
         return thread.id
 
-    def send_message(self, thread_id, assistant_id, message):
+    def send_message(self, thread_id, assistant_id, message, file=None):
+        file_id = None
+        if file:
+            file_id = self.upload_file(file)
+        # Include the file_id in the message payload if it exists
         logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}")
         self.client.beta.threads.messages.create(
             thread_id=thread_id,
