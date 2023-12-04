@@ -57,3 +57,41 @@ These variables should be set in the `.env` file.
 This project uses Poetry to manage its dependencies. Ensure you have Poetry installed and then run `poetry install` to install all required packages.
 
 For more information on using Poetry, visit the [official documentation](https://python-poetry.org/docs/).
+
+
+## Getting Started
+
+Follow these instructions to get the system up and running.
+
+### Replit Backend API
+- Ensure the Replit backend API is active and running.
+
+### Setup for Telegram
+1. Open the Telegram app and start a chat with BotFather.
+2. Create a new bot and note down the token provided.
+    ```
+    Use this token to access the HTTP API:
+    [Your_Token]
+    Keep your token secure and store it safely.
+    ```
+3. Update the `TOKEN` variable in `telegram_bot.py` with your new token.
+4. Install the required package and run the bot:
+    ```bash
+    pip install python-telegram-bot
+    python telegram_bot.py
+    ```
+5. In Telegram, search for your bot (e.g., `@socs_banking_bot`) and start interacting.
+
+### Setup for Terminal (IPython)
+1. Install IPython and python-dotenv:
+    ```bash
+    pip install IPython
+    pip install python-dotenv
+    ```
+2. Open your terminal and start IPython by typing `ipython`.
+3. Interact with the application in the IPython shell.
+
+### Key Files
+- `telegram_bot.py`
+- `chat_bot.py`
+
