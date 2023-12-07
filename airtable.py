@@ -47,8 +47,11 @@ def log_endpoint(func):
 AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
 AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY'] 
 
+from datetime import datetime
+
 async def log_to_airtable(request_data, response_data):
     thread_id = request_data.get('thread_id', "N/A")
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/log"
     headers = {
         "Authorization": f"Bearer {AIRTABLE_API_KEY}",
@@ -61,7 +64,8 @@ async def log_to_airtable(request_data, response_data):
                 "Response": json.dumps(response_data),
                 "Thread ID": thread_id if thread_id else "N/A",
                 "Message": request_data.get('message', "N/A"),  # Retrieve the message from request_data
-                "Action": request_data.get('action')  # Include the Action field
+                "Action": request_data.get('action'),  # Include the Action field
+                "Time": current_time  # Include the current time
             }
         }]
     }
