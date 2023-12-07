@@ -10,20 +10,20 @@ def log_endpoint(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
         # Build request_data object with action and request details, including thread_id if present
+        # Serialize request_data, handling UploadFile objects and other parameters
+        def serialize_request_data(data):
+            if isinstance(data, dict):
+                return {k: serialize_request_data(v) for k, v in data.items() if not isinstance(v, UploadFile)}
+            elif isinstance(data, list):
+                return [serialize_request_data(item) for item in data]
+            else:
+                return data
+
         request_data = {
             "action": func.__name__,
-            "request": serialize_request_data({"args": args, "kwargs": kwargs}) if any(isinstance(arg, UploadFile) for arg in args) or any(isinstance(v, UploadFile) for v in kwargs.values()) else {"args": args, "kwargs": kwargs}
+            "request": serialize_request_data(kwargs)  # Serialize only kwargs, args are not expected
         }
-        # Check if 'thread_id' is a parameter and add it to request_data if present
-        if 'thread_id' in kwargs:
-            request_data['thread_id'] = kwargs['thread_id']
         print(f"Logging input parameters for action '{func.__name__}': {request_data}")
-
-        # Extract message from args or kwargs if present
-        message = next((arg for arg in args if isinstance(arg, str)), None)
-        if not message:
-            message = kwargs.get('message', kwargs.get('text', "N/A"))
-        request_data['message'] = message
 
         # Serialize request_data, handling UploadFile objects and other parameters
         def serialize_request_data(data):
