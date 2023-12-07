@@ -6,6 +6,15 @@ import requests
 import json
 import os
 
+import json
+
+def is_serializable(obj):
+    try:
+        json.dumps(obj)
+        return True
+    except (TypeError, OverflowError):
+        return False
+
 def log_endpoint(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
