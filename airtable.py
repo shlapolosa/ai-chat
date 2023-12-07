@@ -48,12 +48,18 @@ async def log_to_airtable(request_data, response_data):
         "Authorization": f"Bearer {AIRTABLE_API_KEY}",
         "Content-Type": "application/json"
     }
+    # Extract message from args or kwargs if present
+    message = next((arg for arg in args if isinstance(arg, str)), None)
+    if not message:
+        message = kwargs.get('message', kwargs.get('text', "N/A"))
+
     data = {
         "records": [{
             "fields": {
                 "Request": json.dumps(request_data),
                 "Response": json.dumps(response_data),
-                "Thread ID": thread_id if thread_id else "N/A"
+                "Thread ID": thread_id if thread_id else "N/A",
+                "Message": message  # Add the message field
             }
         }]
     }
