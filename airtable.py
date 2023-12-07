@@ -8,14 +8,22 @@ import os
 def log_endpoint(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
-        # Log all input parameters
-        print(f"Logging input parameters: args={args}, kwargs={kwargs}")
+        # Build request_data object
+        request_data = {
+            "args": args,
+            "kwargs": kwargs
+        }
+        print(f"Logging input parameters: {request_data}")
 
         # Call the actual endpoint function
         response = await func(*args, **kwargs)
 
-        # Perform logging of the response here
-        print(f"Logging Response: {response}")
+        # Build response_data object
+        response_data = {
+            "status_code": response.status_code if isinstance(response, Response) else "N/A",
+            "body": response.body.decode("utf-8") if isinstance(response, Response) and hasattr(response, "body") else str(response)
+        }
+        print(f"Logging Response: {response_data}")
 
         return response
     return wrapper
