@@ -83,7 +83,7 @@ async def log_to_airtable(request_data_serializable, response_data):
             "fields": {
                 "Request": json.dumps(request_data_serializable),
                 "Response": json.dumps(response_data),
-                "Thread ID": request_data_serializable.get('request', {}).get('thread_id', "N/A"),
+                "Thread ID": (thread_id_match.group(1) if (thread_id_match := re.search(r"thread_id='?([^'\s]*)'?", response_data['body'])) else "N/A") if isinstance(response_data['body'], str) else "N/A",
                 "Run ID": (run_id_match.group(1) if (run_id_match := re.search(r"run_id='?([^'\s]*)'?", response_data['body'])) else "N/A") if isinstance(response_data['body'], str) else "N/A",
                 "Request Message": request_data_serializable.get('request', {}).get('message', "N/A"),  # Retrieve the message from request_data_serializable
                 "Action": request_data_serializable.get('action'),  # Include the Action field from request_data_serializable
