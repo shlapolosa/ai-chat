@@ -22,6 +22,12 @@ def log_endpoint(func):
             request_data['thread_id'] = kwargs['thread_id']
         print(f"Logging input parameters for action '{func.__name__}': {request_data}")
 
+        # Extract message from args or kwargs if present
+        message = next((arg for arg in args if isinstance(arg, str)), None)
+        if not message:
+            message = kwargs.get('message', kwargs.get('text', "N/A"))
+        request_data['message'] = message
+
         # Call the actual endpoint function
         response = await func(*args, **kwargs)
 
@@ -32,7 +38,7 @@ def log_endpoint(func):
         }
         print(f"Logging Response: {response_data}")
 
-        # Pass thread_id to log_to_airtable if it exists in request_data
+        # Pass thread_id and message to log_to_airtable if they exist in request_data
         asyncio.create_task(log_to_airtable(request_data, response_data))
 
         return response
@@ -48,18 +54,13 @@ async def log_to_airtable(request_data, response_data):
         "Authorization": f"Bearer {AIRTABLE_API_KEY}",
         "Content-Type": "application/json"
     }
-    # Extract message from args or kwargs if present
-    message = next((arg for arg in args if isinstance(arg, str)), None)
-    if not message:
-        message = kwargs.get('message', kwargs.get('text', "N/A"))
-
     data = {
         "records": [{
             "fields": {
                 "Request": json.dumps(request_data),
                 "Response": json.dumps(response_data),
                 "Thread ID": thread_id if thread_id else "N/A",
-                "Message": message  # Add the message field
+                "Message": request_data.get('message', "N/A")  # Retrieve the message from request_data
             }
         }]
     }
