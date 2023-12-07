@@ -52,12 +52,12 @@ def log_endpoint(func):
         print(f"Logging Response: {response_data}")
 
         # Pass thread_id and message to log_to_airtable if they exist in request_data
-        asyncio.create_task(log_to_airtable(request_data, response_data))
+        asyncio.create_task(log_to_airtable(request_data_serializable, response_data))
 
         return response
     return wrapper
 
-async def log_to_airtable(request_data, response_data):
+async def log_to_airtable(request_data_serializable, response_data):
     
     AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
     AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY'] 
