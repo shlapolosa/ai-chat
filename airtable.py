@@ -63,7 +63,7 @@ async def log_to_airtable(request_data_serializable, response_data):
     AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY'] 
 
     from datetime import datetime
-    thread_id = request_data.get('thread_id', "N/A")
+    thread_id = request_data_serializable.get('thread_id', "N/A")
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/log"
     headers = {
@@ -76,8 +76,8 @@ async def log_to_airtable(request_data_serializable, response_data):
                 "Request": json.dumps(request_data_serializable),
                 "Response": json.dumps(response_data),
                 "Thread ID": thread_id if thread_id else "N/A",
-                "Message": request_data.get('message', "N/A"),  # Retrieve the message from request_data
-                "Action": request_data.get('action'),  # Include the Action field
+                "Message": request_data_serializable.get('message', "N/A"),  # Retrieve the message from request_data_serializable
+                "Action": request_data_serializable.get('action'),  # Include the Action field from request_data_serializable
                 "Time": current_time  # Include the current time
             }
         }]
