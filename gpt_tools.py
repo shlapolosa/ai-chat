@@ -76,16 +76,17 @@ def get_authorisation_url(amount):
     write_cache('payment_amount', str(amount))
     write_cache('payment_consent_id', consent_id)
     return redirect_url
+
 def schedule_event(schedule_date: str, schedule_event_type: str, instruction: str, thread_id: str, run_id: str) -> None:
     """
-    Schedules an event by writing a row into an Airtable table called scheduled_job.
+    Schedules an event to be processed at a later period.
 
     Parameters:
     schedule_date: The date when the event is scheduled.
-    schedule_event_type: The type of the scheduled event.
-    instruction: Instructions for the scheduled event.
-    thread_id: The thread ID associated with the event.
-    run_id: The run ID associated with the event.
+    schedule_event_type: The type of the scheduled event. the type can either be TRANSACTION, REMINDER, ALERT, INFORMATIONAL 
+    instruction: Instructions for the scheduled event with a clear prompt of what needs to happen, by whom, with reference to what and any meaning details that will aid the process.
+    thread_id: The thread ID associated with the event as derived from the context that created the event.
+    run_id: The run ID associated with the event as derived from the cntext that created the event.
     """
     AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
     AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']
