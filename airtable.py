@@ -44,7 +44,7 @@ def log_endpoint(func):
         return response
     return wrapper
 
-AIRTABLE_BASE_ID = "your_airtable_base_id"
+AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
 AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY'] 
 
 async def log_to_airtable(request_data, response_data):
