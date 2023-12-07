@@ -15,10 +15,7 @@ def log_endpoint(func):
         response = await func(*args, **kwargs)
 
         # Perform logging of the response here
-        if isinstance(response, Response):
-            print(f"Logging Response: {response.status_code}")
-        else:
-            print(f"Logging Response: Custom Response or Response object not found")
+        print(f"Logging Response: {response}")
 
         return response
     return wrapper
