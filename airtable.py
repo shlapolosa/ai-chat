@@ -9,18 +9,26 @@ def log_endpoint(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
         # Extract the request object from the arguments
-        # The Request object is typically the first positional argument to the endpoint function
-        request = args[0] if args and isinstance(args[0], Request) else kwargs.get('request')
+        request = None
+        if 'request' in kwargs:
+            request = kwargs['request']
+        elif args and isinstance(args[0], Request):
+            request = args[0]
         
         # Perform logging of the request here
-        print(f"Logging Request: {request.method} {request.url}")
+        if request:
+            print(f"Logging Request: {request.method} {request.url}")
+        else:
+            print("Logging Request: Request object not found")
 
         # Call the actual endpoint function
         response = await func(*args, **kwargs)
 
         # Perform logging of the response here
-        # Note: You might need to convert the response to a suitable format for logging
-        print(f"Logging Response: {response.status_code if isinstance(response, Response) else 'Custom Response'}")
+        if isinstance(response, Response):
+            print(f"Logging Response: {response.status_code}")
+        else:
+            print(f"Logging Response: Custom Response or Response object not found")
 
         return response
     return wrapper
