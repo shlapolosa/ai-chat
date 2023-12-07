@@ -21,14 +21,15 @@ logger.info("Assistants have been loaded.")
 chat_service_instance = ChatService(assistant_manager)
 logger.info("ChatService have been loaded.")
 
-def mask_sensitive_info(env_vars):
+def mask_sensitive_info(settings: Settings):
     sensitive_keys = ['API_KEY', 'DSN', 'DATABASE_URL', 'SECRET', 'PASSWORD']
     masked_env_vars = {}
-    for key, value in env_vars.items():
-        if any(sensitive_key in key for sensitive_key in sensitive_keys):
-            masked_env_vars[key] = '*****'
+    for field in settings.__fields__.keys():
+        value = getattr(settings, field)
+        if any(sensitive_key in field for sensitive_key in sensitive_keys):
+            masked_env_vars[field] = '*****'
         else:
-            masked_env_vars[key] = value
+            masked_env_vars[field] = value
     return masked_env_vars
 
 @router.get("/")
