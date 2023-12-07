@@ -44,12 +44,12 @@ def log_endpoint(func):
         return response
     return wrapper
 
-AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
-AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY'] 
-
-from datetime import datetime
-
 async def log_to_airtable(request_data, response_data):
+    
+    AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
+    AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY'] 
+
+    from datetime import datetime
     thread_id = request_data.get('thread_id', "N/A")
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/log"
