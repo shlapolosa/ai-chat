@@ -43,7 +43,7 @@ AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']
 
 async def log_to_airtable(request_data, response_data):
     thread_id = request_data.get('thread_id', "N/A")
-    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Requests"
+    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/log"
     headers = {
         "Authorization": f"Bearer {AIRTABLE_API_KEY}",
         "Content-Type": "application/json"
