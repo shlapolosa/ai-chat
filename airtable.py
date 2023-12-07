@@ -22,11 +22,24 @@ def log_endpoint(func):
             request_data['thread_id'] = kwargs['thread_id']
         print(f"Logging input parameters for action '{func.__name__}': {request_data}")
 
+        # Serialize request_data, handling UploadFile objects
+        def serialize_request_data(data):
+            if isinstance(data, UploadFile):
+                return {"filename": data.filename, "content_type": data.content_type}
+            elif isinstance(data, dict):
+                return {k: serialize_request_data(v) for k, v in data.items()}
+            elif isinstance(data, list):
+                return [serialize_request_data(item) for item in data]
+            else:
+                return data
+
+        request_data_serializable = serialize_request_data(request_data)
+
         # Extract message from args or kwargs if present
         message = next((arg for arg in args if isinstance(arg, str)), None)
         if not message:
             message = kwargs.get('message', kwargs.get('text', "N/A"))
-        request_data['message'] = message
+        request_data_serializable['message'] = message
 
         # Call the actual endpoint function
         response = await func(*args, **kwargs)
@@ -60,7 +73,7 @@ async def log_to_airtable(request_data, response_data):
     data = {
         "records": [{
             "fields": {
-                "Request": json.dumps(request_data),
+                "Request": json.dumps(request_data_serializable),
                 "Response": json.dumps(response_data),
                 "Thread ID": thread_id if thread_id else "N/A",
                 "Message": request_data.get('message', "N/A"),  # Retrieve the message from request_data
