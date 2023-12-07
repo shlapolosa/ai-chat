@@ -25,7 +25,8 @@ def log_endpoint(func):
         # Serialize request_data, handling UploadFile objects
         def serialize_request_data(data):
             if isinstance(data, UploadFile):
-                return {"filename": data.filename, "content_type": data.content_type}
+                # Extract the file information without reading the content, which is not serializable
+                return {"filename": data.filename, "content_type": data.content_type, "file_size": data.file_size}
             elif isinstance(data, dict):
                 return {k: serialize_request_data(v) for k, v in data.items()}
             elif isinstance(data, list):
