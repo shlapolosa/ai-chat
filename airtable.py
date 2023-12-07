@@ -8,12 +8,15 @@ import os
 def log_endpoint(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
-        # Build request_data object
+        # Build request_data object with function name and request details
         request_data = {
-            "args": args,
-            "kwargs": kwargs
+            "function_name": func.__name__,
+            "request": {
+                "args": args,
+                "kwargs": kwargs
+            }
         }
-        print(f"Logging input parameters: {request_data}")
+        print(f"Logging input parameters for function '{func.__name__}': {request_data}")
 
         # Call the actual endpoint function
         response = await func(*args, **kwargs)
