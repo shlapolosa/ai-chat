@@ -79,16 +79,41 @@ def get_authorisation_url(amount):
 
 import requests
 
-def schedule_event(schedule_date: str, schedule_event_type: str, instruction: str, thread_id: str, run_id: str) -> None:
+def schedule_event(schedule_date: str, schedule_event_type: str, instruction: str, thread_id: str, run_id: str) -> dict:
     """
-    Schedules an event to be processed at a later period.
+    Schedules an event to be processed at a later period and returns the response from the API.
 
     Parameters:
     schedule_date: The date when the event is scheduled.
-    schedule_event_type: The type of the scheduled event. the type can either be TRANSACTION, REMINDER, ALERT, INFORMATIONAL 
-    instruction: Instructions for the scheduled event with a clear prompt of what needs to happen, by whom, with reference to what and any meaning details that will aid the process.
+    schedule_event_type: The type of the scheduled event. The type can either be TRANSACTION, REMINDER, ALERT, INFORMATIONAL.
+    instruction: Instructions for the scheduled event with a clear prompt of what needs to happen, by whom, with reference to what and any meaningful details that will aid the process.
     thread_id: The thread ID associated with the event as derived from the context that created the event.
-    run_id: The run ID associated with the event as derived from the cntext that created the event.
+    run_id: The run ID associated with the event as derived from the context that created the event.
+
+    Returns:
+    A dictionary representing the JSON response from the API. This can be a success response with the created record or an error response.
+
+    Example of a success response:
+    {
+        "records": [
+            {
+                "id": "rec1234567890",
+                "fields": {
+                    "Schedule Date": "2023-04-15",
+                    "Event Type": "REMINDER",
+                    "Instruction": "Remind user about upcoming payment",
+                    "Thread ID": "thread_abcdef",
+                    "Run ID": "run_123456"
+                },
+                "createdTime": "2023-04-01T12:00:00.000Z"
+            }
+        ]
+    }
+
+    Example of an error response:
+    {
+        "error": "An error occurred while scheduling the event: Invalid API key provided"
+    }
     """
     AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
     AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']
