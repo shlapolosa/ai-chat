@@ -24,7 +24,19 @@ def log_endpoint(func):
             print(f"RECURSIVE INPUT into serialize_request_data  {data}")
             print(f"INPUT type {type(data)}")
             if isinstance(data, dict):
-                return {k: serialize_request_data(v) for k, v in data.items() if not isinstance(v, UploadFile)}
+                serialized_data = {}
+                for k, v in data.items():
+                    if k == 'file' and isinstance(v, UploadFile):
+                        # Create a serialized file object
+                        serialized_data['file'] = {
+                            "filename": v.filename,
+                            "content_type": v.content_type,
+                            "size": v.file_size,  # Renamed from file_size to size for consistency
+                            "file": None  # We cannot serialize the file content, so we set it to None
+                        }
+                    else:
+                        serialized_data[k] = serialize_request_data(v)
+                return serialized_data
             elif isinstance(data, list):
                 return [serialize_request_data(item) for item in data]
             elif is_not_serializable(data):
