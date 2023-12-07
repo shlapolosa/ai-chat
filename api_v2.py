@@ -2,7 +2,7 @@ import fastapi
 from fastapi import APIRouter, Depends, Form, HTTPException, Body, Response
 from typing import Optional
 from pydantic import parse_obj_as
-from airtable import airtable_logger
+from airtable import log_endpoint
 from main import logger
 from chat_service import ChatService
 from models import ChatRequest, ChatResponse
@@ -33,23 +33,14 @@ def mask_sensitive_info(env_vars):
 
 @router.get("/")
 @log_endpoint
-@airtable_logger
 async def read_root():
     logger.info("Root endpoint was called")
     loaded_assistants = chat_service_instance.get_loaded_assistants_info()
     # env_vars = {key: os.getenv(key) for key in os.environ.keys()}
-    # masked_env_vars = mask_sensitive_info(settings)
+    masked_env_vars = mask_sensitive_info(settings)
     return {
         "loaded_assistants": loaded_assistants,
-        "configuration": {
-            "OPEN_API_KEY": settings.openai_api_key,
-            "AIRTABLE_API_KEY": settings.airtable_api_key,
-            "PROJECT_NAME": settings.PROJECT_NAME,
-            "SENTRY_DSN": settings.SENTRY_DSN,
-            "DATABASE_URL": settings.database_url,
-            "ENVIRONMENT": settings.environment,
-            "BACKEND_CORS_ORIGINS": settings.backend_cors_origins
-        }
+        "configuration": masked_env_vars
     }
 
 @router.get("/chat", response_model=ChatResponse)
@@ -70,7 +61,6 @@ from fastapi import File, UploadFile
 
 @router.post("/chat", response_model=ChatResponse)
 @log_endpoint
-@airtable_logger
 async def chat_endpoint(
     file: UploadFile = File(...),
     assistant_name: Optional[str] = Form(None),
@@ -110,7 +100,6 @@ async def chat_endpoint(
 
 @router.put("/chat", response_model=ChatResponse)
 @log_endpoint
-@airtable_logger
 async def start_chat(
     assistant_name: str = None
 ):
@@ -126,7 +115,6 @@ import json
 
 @router.get("/getOAuthCode")
 @log_endpoint
-@airtable_logger
 def oauth_callback(code, state):
     from nedbank_api import token_heavy, make_payment_function, write_cache, read_cache
     if code:
