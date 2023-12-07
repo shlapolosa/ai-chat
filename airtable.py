@@ -1,5 +1,5 @@
 from functools import wraps
-from fastapi import Request
+from fastapi import Request, UploadFile
 from starlette.responses import Response
 import asyncio
 import requests
