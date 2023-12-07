@@ -32,6 +32,7 @@ def mask_sensitive_info(env_vars):
     return masked_env_vars
 
 @router.get("/")
+@log_endpoint
 @airtable_logger
 async def read_root():
     logger.info("Root endpoint was called")
@@ -52,6 +53,7 @@ async def read_root():
     }
 
 @router.get("/chat", response_model=ChatResponse)
+@log_endpoint
 async def check_run_status(thread_id: str, run_id: str):
     """
     GET endpoint to check the status of a chat run using query parameters. Accepts the thread ID and run ID as query parameters,
@@ -67,6 +69,7 @@ async def check_run_status(thread_id: str, run_id: str):
 from fastapi import File, UploadFile
 
 @router.post("/chat", response_model=ChatResponse)
+@log_endpoint
 @airtable_logger
 async def chat_endpoint(
     file: UploadFile = File(...),
@@ -106,6 +109,7 @@ async def chat_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/chat", response_model=ChatResponse)
+@log_endpoint
 @airtable_logger
 async def start_chat(
     assistant_name: str = None
@@ -121,6 +125,7 @@ async def start_chat(
 import json
 
 @router.get("/getOAuthCode")
+@log_endpoint
 @airtable_logger
 def oauth_callback(code, state):
     from nedbank_api import token_heavy, make_payment_function, write_cache, read_cache
