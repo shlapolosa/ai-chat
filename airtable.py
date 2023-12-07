@@ -22,20 +22,20 @@ def log_endpoint(func):
             request_data['thread_id'] = kwargs['thread_id']
         print(f"Logging input parameters for action '{func.__name__}': {request_data}")
 
-        # Serialize request_data, handling UploadFile objects
+        # Serialize request_data, handling UploadFile objects and other parameters
         def serialize_request_data(data):
-            if isinstance(data, UploadFile):
+            if isinstance(data, dict):
+                return {k: serialize_request_data(v) for k, v in data.items()}
+            elif isinstance(data, list):
+                return [serialize_request_data(item) for item in data]
+            elif isinstance(data, UploadFile):
                 # Extract the file information without reading the content, which is not serializable
                 return {
                     "filename": data.filename,
                     "content_type": data.content_type,
-                    "file_size": data.file_size,
+                    "size": data.file_size,  # Renamed from file_size to size for consistency
                     "file": None  # We cannot serialize the file content, so we set it to None
                 }
-            elif isinstance(data, dict):
-                return {k: serialize_request_data(v) for k, v in data.items()}
-            elif isinstance(data, list):
-                return [serialize_request_data(item) for item in data]
             else:
                 return data
 
