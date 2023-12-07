@@ -50,7 +50,8 @@ async def log_to_airtable(request_data, response_data, thread_id=None):
         "records": [{
             "fields": {
                 "Request": json.dumps(request_data),
-                "Response": json.dumps(response_data)
+                "Response": json.dumps(response_data),
+                "Thread ID": thread_id if thread_id else "N/A"
             }
         }]
     }
