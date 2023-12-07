@@ -11,7 +11,8 @@ def log_endpoint(func):
     async def wrapper(*args, **kwargs):
         # Build request_data object with action and request details, including thread_id if present
         request_data = {
-            "action": func.__name__
+            "action": func.__name__,
+            "request": serialize_request_data({"args": args, "kwargs": kwargs}) if any(isinstance(arg, UploadFile) for arg in args) or any(isinstance(v, UploadFile) for v in kwargs.values()) else {"args": args, "kwargs": kwargs}
         }
         # Check if 'thread_id' is a parameter and add it to request_data if present
         if 'thread_id' in kwargs:
