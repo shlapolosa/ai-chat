@@ -86,7 +86,7 @@ async def log_to_airtable(request_data_serializable, response_data):
                 "Run ID": request_data_serializable.get('request', {}).get('run_id', "N/A"),
                 "Request Message": request_data_serializable.get('request', {}).get('message', "N/A"),  # Retrieve the message from request_data_serializable
                 "Action": request_data_serializable.get('action'),  # Include the Action field from request_data_serializable
-                "Response Message": json.loads(response_data.get('body')).get('message') if isinstance(response_data.get('body'), str) else response_data.get('body', {}).get('message', "N/A"),
+                "Response Message": re.search(r'message="([^"]+)"', response_data.get('body')).group(1) if isinstance(response_data.get('body'), str) and 'message=' in response_data.get('body') else response_data.get('body', {}).get('message', "N/A"),
                 "Time": current_time  # Include the current time
             }
         }]
