@@ -1,6 +1,7 @@
 from functools import wraps
 from fastapi import Request
 from starlette.responses import Response
+import asyncio
 import requests
 import json
 import os
@@ -32,7 +33,7 @@ def log_endpoint(func):
         print(f"Logging Response: {response_data}")
 
         # Pass thread_id to log_to_airtable if it exists in request_data
-        await log_to_airtable(request_data, response_data)
+        asyncio.create_task(log_to_airtable(request_data, response_data))
 
         return response
     return wrapper
