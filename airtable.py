@@ -8,12 +8,12 @@ import os
 
 import json
 
-def is_serializable(obj):
+def is_not_serializable(obj):
     try:
         json.dumps(obj)
-        return True
-    except (TypeError, OverflowError):
         return False
+    except (TypeError, OverflowError):
+        return True
 
 def log_endpoint(func):
     @wraps(func)
@@ -23,7 +23,11 @@ def log_endpoint(func):
         def serialize_request_data(data):
             print(f"RECURSIVE INPUT into serialize_request_data  {data}")
             print(f"INPUT type {type(data)}")
-            if isinstance(data, UploadFile):
+            if isinstance(data, dict):
+                return {k: serialize_request_data(v) for k, v in data.items() if not isinstance(v, UploadFile)}
+            elif isinstance(data, list):
+                return [serialize_request_data(item) for item in data]
+            elif is_not_serializable(data):
                 print(f"is UPloadFile fastapi  {data}")
                 # Extract the file information without reading the content, which is not serializable
                 return {
@@ -32,10 +36,6 @@ def log_endpoint(func):
                     "size": data.file_size,  # Renamed from file_size to size for consistency
                     "file": None  # We cannot serialize the file content, so we set it to None
                 }
-            if isinstance(data, dict):
-                return {k: serialize_request_data(v) for k, v in data.items() if not isinstance(v, UploadFile)}
-            elif isinstance(data, list):
-                return [serialize_request_data(item) for item in data]
             else:
                 return data
 
