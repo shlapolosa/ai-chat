@@ -8,15 +8,18 @@ import os
 def log_endpoint(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
-        # Build request_data object with function name and request details
+        # Build request_data object with action and request details, including thread_id if present
         request_data = {
-            "function_name": func.__name__,
+            "action": func.__name__,
             "request": {
                 "args": args,
                 "kwargs": kwargs
             }
         }
-        print(f"Logging input parameters for function '{func.__name__}': {request_data}")
+        # Check if 'thread_id' is a parameter and add it to request_data if present
+        if 'thread_id' in kwargs:
+            request_data['thread_id'] = kwargs['thread_id']
+        print(f"Logging input parameters for action '{func.__name__}': {request_data}")
 
         # Call the actual endpoint function
         response = await func(*args, **kwargs)
