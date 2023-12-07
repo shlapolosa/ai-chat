@@ -27,7 +27,12 @@ assistants = {
     to return the link for user to click on.
 
 """,
-        "tools": [{"type": "retrieval"}, {"type": "function", "name": "get_services"}],
+        "tools": [
+            {"type": "retrieval"},
+            {"type": "function", "name": "get_services"},
+            {"type": "function", "name": "schedule_event"},
+            {"type": "function", "name": "get_authorisation_url"}
+        ],
         "knowledge_files": ["knowledge/knowledge.docx"]
     },
     "general_assistant": {
