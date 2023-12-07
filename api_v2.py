@@ -8,7 +8,7 @@ from chat_service import ChatService
 from models import ChatRequest, ChatResponse
 from nedbank_api import write_cache, read_cache, make_payment_function, token_light
 from openai_assistant_manager import OpenAIAssistantManager
-from config import settings
+from config import settings, Settings
 import os
 import re
 
