@@ -21,33 +21,22 @@ def log_endpoint(func):
         # Build request_data object with action and request details, including thread_id if present
         # Serialize request_data, handling UploadFile objects and other parameters
         def serialize_request_data(data):
-            print(f"RECURSIVE INPUT into serialize_request_data  {data}")
-            print(f"INPUT type {type(data)}")
             if isinstance(data, dict):
                 serialized_data = {}
                 for k, v in data.items():
-                    if k == 'file' and isinstance(v, UploadFile):
+                    if k == 'file':
                         # Create a serialized file object
                         serialized_data['file'] = {
                             "filename": v.filename,
                             "content_type": v.content_type,
-                            "size": v.file_size,  # Renamed from file_size to size for consistency
-                            "file": None  # We cannot serialize the file content, so we set it to None
+                            "size": v.size,  # Renamed from file_size to size for consistency
+                            "type": "file"  # We cannot serialize the file content, so we set it to None
                         }
                     else:
                         serialized_data[k] = serialize_request_data(v)
                 return serialized_data
             elif isinstance(data, list):
                 return [serialize_request_data(item) for item in data]
-            elif is_not_serializable(data):
-                print(f"is UPloadFile fastapi  {data}")
-                # Extract the file information without reading the content, which is not serializable
-                return {
-                    "filename": data.filename,
-                    "content_type": data.content_type,
-                    "size": data.file_size,  # Renamed from file_size to size for consistency
-                    "file": None  # We cannot serialize the file content, so we set it to None
-                }
             else:
                 return data
 
@@ -57,24 +46,6 @@ def log_endpoint(func):
         }
         print(f"Logging input parameters for action '{func.__name__}': {request_data}")
 
-        # Serialize request_data, handling UploadFile objects and other parameters
-        # def serialize_request_data(data):
-        #     if isinstance(data, dict):
-        #         return {k: serialize_request_data(v) for k, v in data.items()}
-        #     elif isinstance(data, list):
-        #         return [serialize_request_data(item) for item in data]
-        #     elif isinstance(data, UploadFile):
-        #         # Extract the file information without reading the content, which is not serializable
-        #         return {
-        #             "filename": data.filename,
-        #             "content_type": data.content_type,
-        #             "size": data.file_size,  # Renamed from file_size to size for consistency
-        #             "file": None  # We cannot serialize the file content, so we set it to None
-        #         }
-        #     else:
-        #         return data
-
-        # request_data_serializable = serialize_request_data(request_data)
 
         # Call the actual endpoint function
         response = await func(*args, **kwargs)
@@ -86,7 +57,7 @@ def log_endpoint(func):
         }
         print(f"Logging Response: {response_data}")
 
-        # Pass thread_id and message to log_to_airtable if they exist in request_data
+        # Pass thread_id and message to log_to_airtable if they exist in request_data in an async way, dont wait for response
         asyncio.create_task(log_to_airtable(request_data, response_data))
 
         return response
@@ -111,9 +82,11 @@ async def log_to_airtable(request_data_serializable, response_data):
             "fields": {
                 "Request": json.dumps(request_data_serializable),
                 "Response": json.dumps(response_data),
-                "Thread ID": thread_id if thread_id else "N/A",
-                "Message": request_data_serializable.get('message', "N/A"),  # Retrieve the message from request_data_serializable
+                "Thread ID": request_data_serializable.get('request', {}).get('thread_id', "N/A"),
+                "Run ID": request_data_serializable.get('request', {}).get('run_id', "N/A"),
+                "Request Message": request_data_serializable.get('request', {}).get('message', "N/A"),  # Retrieve the message from request_data_serializable
                 "Action": request_data_serializable.get('action'),  # Include the Action field from request_data_serializable
+                "Response Message": response_data.get('body').get('message',"N/A"),
                 "Time": current_time  # Include the current time
             }
         }]
