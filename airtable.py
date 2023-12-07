@@ -12,6 +12,17 @@ def log_endpoint(func):
         # Build request_data object with action and request details, including thread_id if present
         # Serialize request_data, handling UploadFile objects and other parameters
         def serialize_request_data(data):
+            print(f"RECURSIVE INPUT into serialize_request_data  {data}")
+            print(f"INPUT type {type(data)}")
+            if isinstance(data, UploadFile):
+                print(f"is UPloadFile fastapi  {data}")
+                # Extract the file information without reading the content, which is not serializable
+                return {
+                    "filename": data.filename,
+                    "content_type": data.content_type,
+                    "size": data.file_size,  # Renamed from file_size to size for consistency
+                    "file": None  # We cannot serialize the file content, so we set it to None
+                }
             if isinstance(data, dict):
                 return {k: serialize_request_data(v) for k, v in data.items() if not isinstance(v, UploadFile)}
             elif isinstance(data, list):
@@ -26,21 +37,21 @@ def log_endpoint(func):
         print(f"Logging input parameters for action '{func.__name__}': {request_data}")
 
         # Serialize request_data, handling UploadFile objects and other parameters
-        def serialize_request_data(data):
-            if isinstance(data, dict):
-                return {k: serialize_request_data(v) for k, v in data.items()}
-            elif isinstance(data, list):
-                return [serialize_request_data(item) for item in data]
-            elif isinstance(data, UploadFile):
-                # Extract the file information without reading the content, which is not serializable
-                return {
-                    "filename": data.filename,
-                    "content_type": data.content_type,
-                    "size": data.file_size,  # Renamed from file_size to size for consistency
-                    "file": None  # We cannot serialize the file content, so we set it to None
-                }
-            else:
-                return data
+        # def serialize_request_data(data):
+        #     if isinstance(data, dict):
+        #         return {k: serialize_request_data(v) for k, v in data.items()}
+        #     elif isinstance(data, list):
+        #         return [serialize_request_data(item) for item in data]
+        #     elif isinstance(data, UploadFile):
+        #         # Extract the file information without reading the content, which is not serializable
+        #         return {
+        #             "filename": data.filename,
+        #             "content_type": data.content_type,
+        #             "size": data.file_size,  # Renamed from file_size to size for consistency
+        #             "file": None  # We cannot serialize the file content, so we set it to None
+        #         }
+        #     else:
+        #         return data
 
         # request_data_serializable = serialize_request_data(request_data)
 
