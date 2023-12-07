@@ -26,8 +26,10 @@ def mask_sensitive_info(settings: Settings):
     masked_env_vars = {}
     for field in settings.__fields__.keys():
         value = getattr(settings, field)
-        if any(sensitive_key in field.upper() for sensitive_key in sensitive_keys):
+        if value is not None and any(sensitive_key in field.upper() for sensitive_key in sensitive_keys):
             masked_env_vars[field] = value[:5] + '*' * (len(value) - 5)
+        elif value is None:
+            masked_env_vars[field] = None
         else:
             masked_env_vars[field] = value
     return masked_env_vars
