@@ -8,18 +8,8 @@ import os
 def log_endpoint(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):
-        # Extract the request object from the arguments
-        request = None
-        if 'request' in kwargs:
-            request = kwargs['request']
-        elif args and isinstance(args[0], Request):
-            request = args[0]
-        
-        # Perform logging of the request here
-        if request:
-            print(f"Logging Request: {request.method} {request.url}")
-        else:
-            print("Logging Request: Request object not found")
+        # Log all input parameters
+        print(f"Logging input parameters: args={args}, kwargs={kwargs}")
 
         # Call the actual endpoint function
         response = await func(*args, **kwargs)
