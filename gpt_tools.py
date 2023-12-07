@@ -112,5 +112,7 @@ def schedule_event(schedule_date: str, schedule_event_type: str, instruction: st
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code
         print(f"Event scheduled successfully: {data}")
+        return response.json()  # Return the response from the API
     except Exception as e:
         print(f"An error occurred while scheduling the event: {e}")
+        return {"error": str(e)}  # Return the error as a dictionary
