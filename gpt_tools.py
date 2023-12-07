@@ -76,3 +76,38 @@ def get_authorisation_url(amount):
     write_cache('payment_amount', str(amount))
     write_cache('payment_consent_id', consent_id)
     return redirect_url
+def schedule_event(schedule_date: str, schedule_event_type: str, instruction: str, thread_id: str, run_id: str) -> None:
+    """
+    Schedules an event by writing a row into an Airtable table called scheduled_job.
+
+    Parameters:
+    schedule_date: The date when the event is scheduled.
+    schedule_event_type: The type of the scheduled event.
+    instruction: Instructions for the scheduled event.
+    thread_id: The thread ID associated with the event.
+    run_id: The run ID associated with the event.
+    """
+    AIRTABLE_BASE_ID = os.environ['AIRTABLE_BASE_ID']
+    AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']
+    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/scheduled_job"
+    headers = {
+        "Authorization": f"Bearer {AIRTABLE_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "records": [{
+            "fields": {
+                "Schedule Date": schedule_date,
+                "Event Type": schedule_event_type,
+                "Instruction": instruction,
+                "Thread ID": thread_id,
+                "Run ID": run_id
+            }
+        }]
+    }
+    try:
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code
+        print(f"Event scheduled successfully: {data}")
+    except Exception as e:
+        print(f"An error occurred while scheduling the event: {e}")
