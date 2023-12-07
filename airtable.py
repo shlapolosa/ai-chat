@@ -21,7 +21,7 @@ def log_endpoint(func):
 
         request_data = {
             "action": func.__name__,
-            "request": serialize_request_data(kwargs)  # Serialize only kwargs, args are not expected
+            "request": serialize_request_data({'args': args, **kwargs})  # Serialize both args and kwargs
         }
         print(f"Logging input parameters for action '{func.__name__}': {request_data}")
 
