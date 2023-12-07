@@ -1,8 +1,29 @@
+from functools import wraps
 from fastapi import Request
 from starlette.responses import Response
 import requests
 import json
 import os
+
+def log_endpoint(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        # Extract the request object from the arguments
+        # The Request object is typically the first positional argument to the endpoint function
+        request = args[0] if args and isinstance(args[0], Request) else kwargs.get('request')
+        
+        # Perform logging of the request here
+        print(f"Logging Request: {request.method} {request.url}")
+
+        # Call the actual endpoint function
+        response = await func(*args, **kwargs)
+
+        # Perform logging of the response here
+        # Note: You might need to convert the response to a suitable format for logging
+        print(f"Logging Response: {response.status_code if isinstance(response, Response) else 'Custom Response'}")
+
+        return response
+    return wrapper
 
 AIRTABLE_BASE_ID = "your_airtable_base_id"
 AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY'] 
