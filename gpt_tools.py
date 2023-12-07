@@ -77,6 +77,8 @@ def get_authorisation_url(amount):
     write_cache('payment_consent_id', consent_id)
     return redirect_url
 
+import requests
+
 def schedule_event(schedule_date: str, schedule_event_type: str, instruction: str, thread_id: str, run_id: str) -> None:
     """
     Schedules an event to be processed at a later period.
