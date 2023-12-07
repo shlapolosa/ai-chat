@@ -60,7 +60,8 @@ async def log_to_airtable(request_data, response_data):
                 "Request": json.dumps(request_data),
                 "Response": json.dumps(response_data),
                 "Thread ID": thread_id if thread_id else "N/A",
-                "Message": request_data.get('message', "N/A")  # Retrieve the message from request_data
+                "Message": request_data.get('message', "N/A"),  # Retrieve the message from request_data
+                "Action": request_data.get('action')  # Include the Action field
             }
         }]
     }
