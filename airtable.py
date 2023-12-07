@@ -11,11 +11,7 @@ def log_endpoint(func):
     async def wrapper(*args, **kwargs):
         # Build request_data object with action and request details, including thread_id if present
         request_data = {
-            "action": func.__name__,
-            "request": {
-                "args": args,
-                "kwargs": kwargs
-            }
+            "action": func.__name__
         }
         # Check if 'thread_id' is a parameter and add it to request_data if present
         if 'thread_id' in kwargs:
