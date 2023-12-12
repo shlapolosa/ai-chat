@@ -188,32 +188,21 @@ class OpenAIAssistantManager:
         # Return the ID of the created chat session
         return chat["data"]["id"]
 
-    async def send_message(self, thread_id, assistant_id, message, file: UploadFile = None):
-        file_ids = []
-        if file:
-            file_id = await self.upload_file(file)
-            file_ids.append(file_id)
-        # Include the file_ids in the message payload if any file was uploaded
-        logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}, with reference to files {file_ids}")
-        content_with_reference = message + (" with reference to files " + ", ".join(file_ids)) if file_ids else message
-        message_creation_data = {
-            "thread_id": thread_id,
-            "role": "user",
-            "content": content_with_reference
+    async def send_message(self, thread_id: str, assistant_id: str, message: str, file: UploadFile = None) -> str:
+        file_id = await self.upload_file(file) if file else None
+        message_payload = {
+            "model": "gpt-3.5-turbo",  # Replace with the appropriate model
+            "messages": [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": message}
+            ]
         }
-        if file_ids:
-            message_creation_data["file_ids"] = file_ids
-        logger.info(f"SENDING_PROMPT = {message_creation_data}")
-        # Replace with the correct method to send a message to the assistant
-        # Assuming message_creation_data is a dictionary with the correct structure for ChatCompletion.create()
-        response = self.client.ChatCompletion.create(**message_creation_data)
-        # You will need to handle the response appropriately based on your application's logic
-        run = self.client.Run.create(
-            thread_id=thread_id,
-            assistant_id=assistant_id
-        )
-        logger.info(f"send_message: Message sent with run_id={run.id}")
-        return run.id
+        if file_id:
+            message_payload["file"] = file_id
+        logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}, with reference to file_id {file_id}")
+        response = await self.client.create_message(assistant_id, message_payload)
+        logger.info(f"send_message: Message sent with response: {response}")
+        return response["data"]["id"]
 
     async def check_run_status(self, thread_id, run_id):
         # Replace with the correct method to retrieve the status of a conversation with the assistant
