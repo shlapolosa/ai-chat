@@ -179,17 +179,14 @@ class OpenAIAssistantManager:
         logger.info("All knowledge files have been uploaded.")
         return file_ids
 
-    def create_thread(self):
-        # Assuming the correct method to create a conversation is `self.client.Conversation.create()`
-        # Replace with the actual method if different
-        # Replace with the correct method to start a conversation with the assistant
-        # For example, if you're using GPT-3.5, you might start a conversation like this:
-        conversation = self.client.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Replace with the appropriate model
+    def create_thread(self) -> str:
+        # Create a new chat session using the OpenAI API
+        chat = openai.Chat.create(
+            model="gpt-3.5-turbo",  # Specify the model to use
             messages=[{"role": "system", "content": "You are a helpful assistant."}]
         )
-        # Note: You will need to adjust the parameters according to your specific use case
-        return conversation.id
+        # Return the ID of the created chat session
+        return chat["data"]["id"]
 
     async def send_message(self, thread_id, assistant_id, message, file: UploadFile = None):
         file_ids = []
