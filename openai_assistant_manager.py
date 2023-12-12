@@ -17,11 +17,8 @@ logger = logging.getLogger(__name__)
 class OpenAIAssistantManager:
 #TODO: Socrates to split file into OpenAIAssistManager and APIRequestHandler files
 
-    def __init__(self, openai_api_key):
+    def __init__(self, openai_api_key: str):
         openai.api_key = openai_api_key
-        self.client = openai
-        self.api_version = 'v1'  # Assuming the API version is v1, adjust as necessary
-        self.organization = 'your_organization'  # Replace with actual organization name
         self.all_assistants_info = self.load_or_create_assistants()
 
     @property
