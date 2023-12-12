@@ -108,7 +108,7 @@ class OpenAIAssistantManager:
                         "file_ids": self.upload_knowledge_files(config.get("knowledge_files", []))
                     }
                     logger.info(f"Creating assistant with parameters: {assistant_creation_params}")
-                    assistant = self.client.beta.assistants.create(**assistant_creation_params)
+                    assistant = self.client.Assistant.create(**assistant_creation_params)
                     # Store the assistant information
                     assistant_info = {
                         "assistant_name": assistant_name,
@@ -204,8 +204,8 @@ class OpenAIAssistantManager:
         if file_ids:
             message_creation_data["file_ids"] = file_ids
         logger.info(f"SENDING_PROMPT = {message_creation_data}")
-        self.client.beta.threads.messages.create(**message_creation_data)
-        run = self.client.beta.threads.runs.create(
+        self.client.Message.create(**message_creation_data)
+        run = self.client.Run.create(
             thread_id=thread_id,
             assistant_id=assistant_id
         )
@@ -213,7 +213,7 @@ class OpenAIAssistantManager:
         return run.id
 
     async def check_run_status(self, thread_id, run_id):
-        run_status = self.client.beta.threads.runs.retrieve(
+        run_status = self.client.Run.retrieve(
             thread_id=thread_id,
             run_id=run_id
         )
@@ -249,7 +249,7 @@ class OpenAIAssistantManager:
                                     logger.info(f"Function output not async:")
                                     output = function_tool(**arguments)
                                 logger.info(f"Function output: {output}")
-                                self.client.beta.threads.runs.submit_tool_outputs(
+                                self.client.Run.submit_tool_outputs(
                                     thread_id=thread_id,
                                     run_id=run_id,
                                     tool_outputs=[{
