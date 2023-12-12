@@ -65,7 +65,7 @@ from fastapi import File, UploadFile
 @router.post("/chat", response_model=ChatResponse)
 @log_endpoint
 async def chat_endpoint(
-    file: UploadFile = File(...),
+    file: Optional[UploadFile] = File(None),
     assistant_name: Optional[str] = Form(None),
     thread_id: str = Form(...),
     message: str = Form(...)

@@ -200,6 +200,7 @@ class OpenAIAssistantManager:
         }
         if file_ids:
             message_creation_data["file_ids"] = file_ids
+        logger.info(f"SENDING_PROMPT = {message_creation_data}")
         self.client.beta.threads.messages.create(**message_creation_data)
         run = self.client.beta.threads.runs.create(
             thread_id=thread_id,
@@ -239,8 +240,10 @@ class OpenAIAssistantManager:
                             logger.info(f"Function arguments: {arguments}")
                             if function_tool:
                                 if asyncio.iscoroutinefunction(function_tool):
+                                    logger.info(f"Function output async:")
                                     output = await function_tool(**arguments)
                                 else:
+                                    logger.info(f"Function output not async:")
                                     output = function_tool(**arguments)
                                 logger.info(f"Function output: {output}")
                                 self.client.beta.threads.runs.submit_tool_outputs(

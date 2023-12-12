@@ -13,7 +13,7 @@ headers = {
     "Accept": "application/json",
     "Content-Type": "application/json",
 }
-response = requests.put('https://ai-chat.socrateshlapolo.repl.co/api/chat', headers=headers, verify=False)
+response = requests.put('http://localhost:8000/api/v2/chat', headers=headers, verify=False)
 thread_id = response.json().get('thread_id')
 
 
@@ -23,7 +23,7 @@ def send_message(message):
         "message": message
     }
     response = requests.post(
-        'https://ai-chat.socrateshlapolo.repl.co/api/chat',
+        'http://localhost:8000/api/v2/chat',
         headers=headers,
         data=json.dumps(payload),
         verify=False
@@ -32,7 +32,7 @@ def send_message(message):
 
     message = 'Run Stopped'
     while message == 'Run Stopped':
-        response = requests.get(f'https://ai-chat.socrateshlapolo.repl.co/api/chat?thread_id={thread_id}&run_id={run_id}',
+        response = requests.get(f'http://localhost:8000/api/v2/chat?thread_id={thread_id}&run_id={run_id}',
                                 headers=headers,
                                 verify=False)
         message = response.json().get('message')

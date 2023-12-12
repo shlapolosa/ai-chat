@@ -1,10 +1,10 @@
 # This is a template and should be customized based on your application's needs.
 
 assistants = {
-    "personal_banker": {
+    "personal_banker_v2": {
         "active": True,
-        "default": True,
-        "assistant_id": "asst_F1Sg8aWqoknfvgQqj5y9hsyu",
+        "default": False,
+        "assistant_id": "asst_kxtlqY7mEtP1q8kmFHBKnHzf",
         "prompt":
             """
     The assistant has been programmed to help people who are interested in banking enquiries, it is a personal banker,
@@ -22,32 +22,39 @@ assistants = {
     The services that the assistant can provide are accessed via the get_services function
 
     The assistant must always include the information returned back from the function get_service in the form, 'Additional services inclue' then a list exactly as per the function call but in a printable fashion. if assistant could not get an output from the service, assistant must give indication of what went wrong.
+    When given a file to analyse, check your files repository for that id, if you cant find the id, describe to the user as if they were a developer why not.
 
-    When asked about an authorisation url or request, always use the get_authorisation_url function
+    When asked about an authorisation url or payments, always use the get_authorisation_url function
     to return the link for user to click on.
 
+    any request, if you cant access the file being mentioned then use file-73zPJFpJHJd6IA8nqxDV6gTB
+    as the fallback.
 """,
         "tools": [
             {"type": "retrieval"},
             {"type": "function", "name": "get_services"},
             {"type": "function", "name": "schedule_event"},
-            {"type": "function", "name": "get_authorisation_url"}
+            {"type": "function", "name": "make_payment"}
         ],
-        "knowledge_files": ["knowledge/knowledge.docx"]
+        "knowledge_files": ["knowledge/knowledge.docx", "knowledge/temp_Invoice IN101765.PDF","knowledge/Invoice IN101765.PDF"]
     },
-    "general_assistant": {
-        "active": False,
-        "default": False,
-        "assistant_id": "",
-        "prompt": [
-            "Engage in general conversation.",
-            "Provide information on a wide range of topics."
-        ],
+    "home_plus_assistant": {
+        "active": True,
+        "default": True,
+        "assistant_id": "asst_KD33R9bYv1ba4UAJR4AE5TXc",
+        "prompt": 
+        """
+        You are an assistant for the homeplus services company. Use the knowledge stored in your knowledge files to answer any questions 
+        regarding products and services. you can further get more information on the website at https://www.homeplus.africa/
+        Only keep the discussion relevant to homeplus and nothing else.
+        Action any services using only the functions you have access to.
+        If when performing an action and you need more data that comes from the user, please ask the user for any information you dont have.
+        """,
         "tools": [{"type": "retrieval"},
-                  {"type": "function", "name": "get_balance"},
-                  {"type": "function", "name": "get_authorisation_url"}
+                  {"type": "function", "name": "book_job"},
+                  {"type": "function", "name": "get_jobs_for_user"}
                   ],
-        "knowledge_files": ["general_knowledge.json"]
+        "knowledge_files": ["knowledge/knowledge-home.pdf"]
     },
     "travel_advisor": {
         "active": False,

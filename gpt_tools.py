@@ -2,6 +2,7 @@
 
 from config import settings
 from prompts import assistants
+import os
 
 # Add thread to DB with platform identifier
 def add_thread(thread_id: str, platform: str) -> None:
@@ -32,6 +33,69 @@ def add_thread(thread_id: str, platform: str) -> None:
         # Handle exceptions like network errors, request timeouts, etc.
         print(f"An error occurred while adding the thread: {e}")
 
+
+# Add thread to DB with platform identifier
+def book_job(location: str, user_id: str) -> str:
+    """
+    Book a job or service for a user and returns a reference
+
+    Parameters:
+    location: The users location address.
+    user_id: The user's identity number.
+    """
+    # url = "https://api.airtable.com/v0/app9KJE69rZ0WLnpV/Threads" # replace this with your Airtable Web API URL
+    # headers = {
+    #     "Authorization": settings.airtable_api_key,
+    #     "Content-Type": "application/json"
+    # }
+    # data = {
+    #     "records": [{
+    #         "fields": {
+    #             "Thread ID": thread_id,
+    #             "Platform": platform
+    #         }
+    #     }]
+
+    # }
+
+    try:
+        print(f"booking job")
+        return "xyz123"
+    except Exception as e:
+        # Handle exceptions like network errors, request timeouts, etc.
+        print(f"failed to book job: {e}")
+
+
+def get_jobs_for_user(user_id: str) -> str:
+    """
+    get all the previously booked jobs for this user as a list of references to those jobs
+
+    Parameters:
+    user_id: The user's identity number.
+    """
+    # url = "https://api.airtable.com/v0/app9KJE69rZ0WLnpV/Threads" # replace this with your Airtable Web API URL
+    # headers = {
+    #     "Authorization": settings.airtable_api_key,
+    #     "Content-Type": "application/json"
+    # }
+    # data = {
+    #     "records": [{
+    #         "fields": {
+    #             "Thread ID": thread_id,
+    #             "Platform": platform
+    #         }
+    #     }]
+
+    # }
+
+    try:
+        print(f"getting jobs")
+        return ["xyz123","wxyz324"]
+    except Exception as e:
+        # Handle exceptions like network errors, request timeouts, etc.
+        print(f"failed to get jobs: {e}")
+
+
 import json
 
 def get_services(assistant_name: str) -> str:
@@ -56,9 +120,9 @@ def get_services(assistant_name: str) -> str:
     return services
 
 
-def get_authorisation_url(amount):
+def make_payment(amount):
     """
-    Get authorisation link for confirming payment.
+    Get make a payment and authorisation link for confirming payment.
 
     Parameters:
     amount: How much should be paid
@@ -71,15 +135,17 @@ def get_authorisation_url(amount):
     import decimal
     from nedbank_api import token_light, create_payment_intent
     bearer_token = token_light("payments")
-    amount = decimal.Decimal('53.6')
+    print(f"got light token: {bearer_token}")
+    amount = decimal.Decimal(amount)
     consent_id, redirect_url = create_payment_intent(bearer_token, amount)
+    print(f"created intent")
     write_cache('payment_amount', str(amount))
     write_cache('payment_consent_id', consent_id)
     return redirect_url
 
 import requests
 
-def schedule_event(schedule_date: str, schedule_event_type: str, instruction: str, thread_id: str, run_id: str) -> dict:
+def schedule_event(schedule_date: str, schedule_event_type: str, instruction: str) -> dict:
     """
     Schedules an event to be processed at a later period and returns the response from the API.
 
@@ -87,8 +153,6 @@ def schedule_event(schedule_date: str, schedule_event_type: str, instruction: st
     schedule_date: The date when the event is scheduled.
     schedule_event_type: The type of the scheduled event. The type can either be TRANSACTION, REMINDER, ALERT, INFORMATIONAL.
     instruction: Instructions for the scheduled event with a clear prompt of what needs to happen, by whom, with reference to what and any meaningful details that will aid the process.
-    thread_id: The thread ID associated with the event as derived from the context that created the event.
-    run_id: The run ID associated with the event as derived from the context that created the event.
 
     Returns:
     A dictionary representing the JSON response from the API. This can be a success response with the created record or an error response.
@@ -127,9 +191,7 @@ def schedule_event(schedule_date: str, schedule_event_type: str, instruction: st
             "fields": {
                 "Schedule Date": schedule_date,
                 "Event Type": schedule_event_type,
-                "Instruction": instruction,
-                "Thread ID": thread_id,
-                "Run ID": run_id
+                "Instruction": instruction
             }
         }]
     }
