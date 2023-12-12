@@ -183,8 +183,10 @@ class OpenAIAssistantManager:
         return file_ids
 
     def create_thread(self):
-        thread = self.client.beta.threads.create()
-        return thread.id
+        # Assuming the correct method to create a conversation is `self.client.Conversation.create()`
+        # Replace with the actual method if different
+        conversation = self.client.Conversation.create()
+        return conversation.id
 
     async def send_message(self, thread_id, assistant_id, message, file: UploadFile = None):
         file_ids = []
