@@ -7,7 +7,10 @@ import textwrap
 import urllib3
 from IPython.lib.pretty import pprint
 
+import logging
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# logging.basicConfig(level=logging.DEBUG)
 
 headers = {
     "Accept": "application/json",
@@ -18,14 +21,19 @@ thread_id = response.json().get('thread_id')
 
 
 def send_message(message):
+    
+    file_to_upload = open('knowledge/Invoice IN101765.PDF', 'rb') 
+    files = {                                                                                                                                                                                   
+     'file': file_to_upload,                                                                                                                               
+    } 
     payload = {
         "thread_id": thread_id,
         "message": message
     }
     response = requests.post(
         'http://localhost:8000/api/v2/chat',
-        headers=headers,
-        data=json.dumps(payload),
+        data=payload,
+        files=None,
         verify=False
     )
     run_id = response.json().get('run_id')

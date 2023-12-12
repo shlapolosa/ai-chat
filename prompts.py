@@ -2,7 +2,7 @@
 
 assistants = {
     "personal_banker_v2": {
-        "active": True,
+        "active": False,
         "default": False,
         "assistant_id": "asst_kxtlqY7mEtP1q8kmFHBKnHzf",
         "prompt":

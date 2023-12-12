@@ -17,8 +17,11 @@ logger = logging.getLogger(__name__)
 class OpenAIAssistantManager:
 #TODO: Socrates to split file into OpenAIAssistManager and APIRequestHandler files
 
-    def __init__(self, openai_api_key: str):
+    def __init__(self, openai_api_key):
         openai.api_key = openai_api_key
+        self.client = openai.OpenAI()
+        self.api_version = 'v1'  # Assuming the API version is v1, adjust as necessary
+        self.organization = 'your_organization'  # Replace with actual organization name
         self.all_assistants_info = self.load_or_create_assistants()
 
     @property
@@ -105,7 +108,7 @@ class OpenAIAssistantManager:
                         "file_ids": self.upload_knowledge_files(config.get("knowledge_files", []))
                     }
                     logger.info(f"Creating assistant with parameters: {assistant_creation_params}")
-                    assistant = self.client.Assistant.create(**assistant_creation_params)
+                    assistant = self.client.beta.assistants.create(**assistant_creation_params)
                     # Store the assistant information
                     assistant_info = {
                         "assistant_name": assistant_name,
@@ -179,41 +182,39 @@ class OpenAIAssistantManager:
         logger.info("All knowledge files have been uploaded.")
         return file_ids
 
-    def create_thread(self) -> str:
-        # Create a new chat session using the OpenAI API
-        chat = openai.Chat.create(
-            model="gpt-3.5-turbo",  # Specify the model to use
-            messages=[{"role": "system", "content": "You are a helpful assistant."}]
-        )
-        # Return the ID of the created chat session
-        return chat["data"]["id"]
+    def create_thread(self):
+        thread = self.client.beta.threads.create()
+        return thread.id
 
-    async def send_message(self, thread_id: str, assistant_id: str, message: str, file: UploadFile = None) -> str:
-        file_id = await self.upload_file(file) if file else None
-        message_payload = {
-            "model": "gpt-3.5-turbo",  # Replace with the appropriate model
-            "messages": [
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": message}
-            ]
+    async def send_message(self, thread_id, assistant_id, message, file: UploadFile = None):
+        file_ids = []
+        if file:
+            file_id = await self.upload_file(file)
+            file_ids.append(file_id)
+        # Include the file_ids in the message payload if any file was uploaded
+        logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}, with reference to files {file_ids}")
+        content_with_reference = message + (" with reference to files " + ", ".join(file_ids)) if file_ids else message
+        message_creation_data = {
+            "thread_id": thread_id,
+            "role": "user",
+            "content": content_with_reference
         }
-        if file_id:
-            message_payload["file"] = file_id
-        logger.info(f"send_message: Sending message to thread_id={thread_id}, assistant_id={assistant_id}, with reference to file_id {file_id}")
-        response = await self.client.create_message(assistant_id, message_payload)
-        logger.info(f"send_message: Message sent with response: {response}")
-        return response["data"]["id"]
+        if file_ids:
+            message_creation_data["file_ids"] = file_ids
+        logger.info(f"SENDING_PROMPT = {message_creation_data}")
+        self.client.beta.threads.messages.create(**message_creation_data)
+        run = self.client.beta.threads.runs.create(
+            thread_id=thread_id,
+            assistant_id=assistant_id
+        )
+        logger.info(f"send_message: Message sent with run_id={run.id}")
+        return run.id
 
     async def check_run_status(self, thread_id, run_id):
-        # Replace with the correct method to retrieve the status of a conversation with the assistant
-        # Assuming you have stored the conversation ID and message ID, you would retrieve the status like this:
-        response = self.client.ChatCompletion.retrieve(
-            model="gpt-3.5-turbo",  # Replace with the appropriate model
-            chat_id=thread_id,  # Replace with the actual conversation ID
-            message_id=run_id  # Replace with the actual message ID
+        run_status = self.client.beta.threads.runs.retrieve(
+            thread_id=thread_id,
+            run_id=run_id
         )
-        # The variable names thread_id and run_id are placeholders and should be replaced with your actual variable names
-        # You will need to handle the response appropriately based on your application's logic
         logger.info(f"check_run_status: Current run status response={run_status.status}")
         if run_status.status == 'requires_action':
             logger.info("Action required for the run. Processing...")
@@ -246,7 +247,7 @@ class OpenAIAssistantManager:
                                     logger.info(f"Function output not async:")
                                     output = function_tool(**arguments)
                                 logger.info(f"Function output: {output}")
-                                self.client.Run.submit_tool_outputs(
+                                self.client.beta.threads.runs.submit_tool_outputs(
                                     thread_id=thread_id,
                                     run_id=run_id,
                                     tool_outputs=[{
