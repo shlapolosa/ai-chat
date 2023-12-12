@@ -25,14 +25,17 @@ def log_endpoint(func):
             if isinstance(data, dict):
                 serialized_data = {}
                 for k, v in data.items():
-                    if k == 'file':
+                    if k == 'file' and v is not None:
                         # Create a serialized file object
                         serialized_data['file'] = {
                             "filename": v.filename,
                             "content_type": v.content_type,
-                            "size": v.size,  # Renamed from file_size to size for consistency
-                            "type": "file"  # We cannot serialize the file content, so we set it to None
+                            "size": v.size,
+                            "type": "file"
                         }
+                    elif k == 'file' and v is None:
+                        # Handle the case where the file is None
+                        serialized_data['file'] = None
                     else:
                         serialized_data[k] = serialize_request_data(v)
                 return serialized_data
