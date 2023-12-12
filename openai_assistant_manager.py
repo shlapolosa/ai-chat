@@ -185,7 +185,13 @@ class OpenAIAssistantManager:
     def create_thread(self):
         # Assuming the correct method to create a conversation is `self.client.Conversation.create()`
         # Replace with the actual method if different
-        conversation = self.client.Conversation.create()
+        # Replace with the correct method to start a conversation with the assistant
+        # For example, if you're using GPT-3.5, you might start a conversation like this:
+        conversation = self.client.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Replace with the appropriate model
+            messages=[{"role": "system", "content": "You are a helpful assistant."}]
+        )
+        # Note: You will need to adjust the parameters according to your specific use case
         return conversation.id
 
     async def send_message(self, thread_id, assistant_id, message, file: UploadFile = None):
@@ -204,7 +210,10 @@ class OpenAIAssistantManager:
         if file_ids:
             message_creation_data["file_ids"] = file_ids
         logger.info(f"SENDING_PROMPT = {message_creation_data}")
-        self.client.Message.create(**message_creation_data)
+        # Replace with the correct method to send a message to the assistant
+        # Assuming message_creation_data is a dictionary with the correct structure for ChatCompletion.create()
+        response = self.client.ChatCompletion.create(**message_creation_data)
+        # You will need to handle the response appropriately based on your application's logic
         run = self.client.Run.create(
             thread_id=thread_id,
             assistant_id=assistant_id
@@ -213,10 +222,15 @@ class OpenAIAssistantManager:
         return run.id
 
     async def check_run_status(self, thread_id, run_id):
-        run_status = self.client.Run.retrieve(
-            thread_id=thread_id,
-            run_id=run_id
+        # Replace with the correct method to retrieve the status of a conversation with the assistant
+        # Assuming you have stored the conversation ID and message ID, you would retrieve the status like this:
+        response = self.client.ChatCompletion.retrieve(
+            model="gpt-3.5-turbo",  # Replace with the appropriate model
+            chat_id=thread_id,  # Replace with the actual conversation ID
+            message_id=run_id  # Replace with the actual message ID
         )
+        # The variable names thread_id and run_id are placeholders and should be replaced with your actual variable names
+        # You will need to handle the response appropriately based on your application's logic
         logger.info(f"check_run_status: Current run status response={run_status.status}")
         if run_status.status == 'requires_action':
             logger.info("Action required for the run. Processing...")
